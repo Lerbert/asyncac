@@ -1,0 +1,17 @@
+machine
+  name Gen;
+  acp [ true
+    : ∀ i . i ∈ project(h, { send(divO) }) → ¬ msg(send(divO), int(0)) ∈ i ]
+    : [ true ];
+
+  vars x;
+
+  outputs div.int(val);
+
+  states
+    Generating : [ xAcc(data(g)) > 0 ∧ ∀ i . i ∈ project(h, { send(divO) }) → ¬ msg(send(divO), int(0)) ∈ i ];
+
+  init Generating : [ x = 1 ];
+
+  trans Generating --> Generating : / { div.int(x); x := x + 1 };
+end machine

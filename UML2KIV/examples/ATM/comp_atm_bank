@@ -1,0 +1,8 @@
+system
+  name atmBank;
+
+  comp atm1 : ATM;
+  comp bank1 : Bank;
+
+  conn atm1.bankCom -- bank1.atmCom;
+end system

@@ -1,0 +1,64 @@
+cabal-version:      2.4
+name:               UML2KIV
+version:            0.1.0.0
+
+-- A short (one-line) description of the package.
+-- synopsis:
+
+-- A longer description of the package.
+-- description:
+
+-- A URL where users can report bugs.
+-- bug-reports:
+
+-- The license under which the package is released.
+-- license:
+author:             Florian Lercher
+maintainer:         florian.lercher@tum.de
+
+-- A copyright notice.
+-- copyright:
+-- category:
+extra-source-files: CHANGELOG.md
+
+executable UML2KIV
+    main-is:          UML2KIV.hs
+
+    -- Modules included in this executable, other than Main.
+    other-modules:
+        Common.Types
+        Common.Parser
+        AsyncAC.Types
+        AsyncAC.Common.Types
+        AsyncAC.TransitionSystem.Types
+        AsyncAC.Program.Types
+        KIV.Types
+        UML.Types
+        UML.Common.Types
+        UML.Common.Parser
+        UML.CompositeStructure.Types
+        UML.CompositeStructure.Parser
+        UML.CompositeStructure.Semantic
+        UML.StateMachine.Types
+        UML.StateMachine.Parser
+        UML.StateMachine.Semantic
+        UML.System.Types
+        UML.System.Semantic
+        Translation.AsyncAC2Graphviz
+        Translation.AsyncAC2KIV
+        Translation.Common2Text
+        Translation.KIV2File
+        Translation.UML2AsyncAC
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:
+        base ^>=4.14.3.0,
+        containers ^>=0.6.5.1,
+        directory ^>=1.3.6.0,
+        filepath ^>=1.4.2.1,
+        optparse-applicative ^>=0.17.0.0,
+        parsec ^>=3.1.14.0,
+        text ^>=1.2.4.1
+    hs-source-dirs:   src
+    default-language: Haskell2010

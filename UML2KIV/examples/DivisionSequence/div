@@ -1,0 +1,24 @@
+machine
+  name Div;
+  acp [ # queue(h, divI) = 0 ∨ ¬ int(0) ∈ queue(h, divI).head
+    : ∀ i . i ∈ project(h, { send(resO) }) → ¬ msg(send(resO), error) ∈ i ]
+    : [ true ];
+
+  vars n;
+
+  inputs div.int(val);
+
+  outputs
+    res.number(val),
+    res.error;
+
+  states
+    Dividing : [ ∀ i . i ∈ project(h, { send(resO) }) → ¬ msg(send(resO), error) ∈ i ],
+    Error : [ false ];
+
+  init Dividing : [ n = 42 ];
+
+  trans Dividing --> Dividing : div.int(d) [ d ≠ 0 ]/ { res.number(n / d) };
+  trans Dividing --> Error : div.int(d) [ d = 0 ]/ { res.error; n := 0 };
+  trans Error --> Error : div.int(d) / { res.error };
+end machine

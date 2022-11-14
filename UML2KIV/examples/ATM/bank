@@ -1,0 +1,21 @@
+machine
+  name Bank;
+
+  vars wasVerified;
+
+  inputs atmCom.verify(card, pin);
+
+  outputs atmCom.verified
+        , atmCom.reenterPIN
+        ;
+
+  states Idle, Verifying, VeriSuccess, VeriFail;
+
+  init Idle : [ true ];
+
+  trans Idle --> Verifying : atmCom.verify(c, p) / { wasVerified := 0 };
+  trans Verifying --> VeriSuccess : / { wasVerified :=1 };
+  trans Verifying --> VeriFail : ;
+  trans VeriSuccess --> Idle : / { atmCom.verified };
+  trans VeriFail --> Idle : / { atmCom.reenterPIN };
+end machine

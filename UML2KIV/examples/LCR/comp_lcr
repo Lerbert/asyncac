@@ -1,0 +1,13 @@
+system
+  name lcrX4;
+
+  comp lcr1 : lcrProc;
+  comp lcr2 : lcrProc;
+  comp lcr3 : lcrProc;
+  comp lcr4 : lcrProcMax;
+
+  conn lcr1.next -- lcr3.prev;
+  conn lcr3.next -- lcr2.prev;
+  conn lcr2.next -- lcr4.prev;
+  conn lcr4.next -- lcr1.prev;
+end system

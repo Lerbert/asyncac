@@ -1,0 +1,32 @@
+machine
+  name ATM;
+
+  vars cardId
+     , pin
+     , trialsNum
+     ;
+
+  inputs userCom.card(c)
+       , userCom.PIN(p)
+       , bankCom.verified
+       , bankCom.reenterPIN
+       ;
+
+  outputs bankCom.verify(card, pin)
+        , userCom.ejectCard
+        , userCom.keepCard
+        ;
+
+  states Idle, CardEntered, PINEntered, Verifying, Verified;
+
+  init Idle : [ true ];
+
+  trans Idle --> CardEntered : userCom.card(c) / { cardId:=c };
+  trans CardEntered --> PINEntered : userCom.PIN(p) / { pin:=p };
+  trans PINEntered --> Verifying :  / { bankCom.verify(cardId,pin) };
+  trans Verifying --> Verified : bankCom.verified;
+  trans Verified --> Idle : / { userCom.ejectCard; trialsNum := 0 };
+
+  trans Verifying --> Idle : bankCom.reenterPIN [ trialsNum ≥ 3 ] / { userCom.keepCard; trialsNum := 0 };
+  trans Verifying --> CardEntered : bankCom.reenterPIN [ trialsNum < 3 ] / { trialsNum := trialsNum+1 };
+end machine

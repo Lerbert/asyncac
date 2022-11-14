@@ -1,0 +1,8 @@
+system
+  name DivisionSequence;
+
+  comp generator : Gen;
+  comp divider : Div;
+
+  conn generator.div -- divider.div;
+end system
