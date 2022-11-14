@@ -1,0 +1,214 @@
+;;; this is a comment
+
+;; heuristics:
+
+;; ### heuristic sets ###
+;; PL Heuristics + Case Split + Quantifier
+;; PL Heuristics + Struct. Ind.
+;; PL Heuristics + Case Splitting
+;; PL Heuristics
+;; Cntex Heuristics
+;; DL Heuristics + Induction
+;; DL Heuristics + Case Splitting
+;; DL Heuristics
+;; TL Heuristics
+;; TL Heuristics + Case Splitting
+;; TL Heuristics + Exec
+;; TL Heuristics + Exec + CS
+;; TL Heuristics + Breadth First Exec
+;; RG Heuristics
+;; RG Heuristics + Case Splitting
+;; RG Heuristics + CS + Weakening
+
+;; ### heuristics for PL
+;; simplifier
+;; elimination
+;; var elimination
+;; use patterns
+;; forward
+;; Quantifier closing
+;; Quantifier
+;; cut
+;; constructor cut
+;; weak cut
+;; nonsplitting cut
+;; PLUnfold
+;; if-then-else split
+;; pl case distinction
+;; structural induction
+;; apply ind once
+;; apply ind
+;; apply ind closing
+;; induction
+;; batch mode
+;; symbolic execution
+;; annotation
+
+;; ### heuristics for DL
+;; symbolic execution
+;; conditional right split
+;; conditional left split
+;; conditional
+;; split
+;; contract and execute
+;; use patterns
+;; induction
+;; weak unfold
+;; unfold
+;; strong unfold
+;; apply program lemma
+;; calls nonrecursive
+;; calls nonrec nowhile
+;; calls concrete
+;; calls flat
+;; bounded calls
+;; omega
+;; loop exit
+;; unwind
+;; execute loop
+;; exec loop
+;; simplifier
+;; cntex batch mode
+;; Quantifier closing
+;; axiom cut
+;; rewrite
+;; constructor cut
+;; forward
+;; elimination
+;; var elimination
+;; if-then-else split
+;; dl case distinction
+;; pl case distinction
+;; cut
+;; weak cut
+;; nonsplitting cut
+;; PLUnfold
+;; Quantifier
+;; apply ind once
+;; apply ind
+;; apply ind closing
+;; structural induction
+;; batch mode
+;; proof lemma
+;; annotation
+
+;;   ###  heuristics for TL ###
+;; tl call
+;; apply VD induction
+;; tl atomic call
+;; tl nosplit
+;; tl split
+;; tl unwind
+;; tl step nosplit
+;; tl step split
+;; tl step
+;; tl switch
+;; tl weaken
+;; tl prefix cut
+;; tl extract vars
+;; rg weakening
+;; rg case distinction
+
+;;   ### heuristics for basicrules (usebasicrules? options) = T ###
+;; axiom
+;; prop simplification
+;; discard quantifier
+;; Quantifier closing
+;; subst equation
+;; smart basic case distinction
+;; Quantifier
+;; prop split
+;; batch mode
+;; structural induction
+
+;; options:
+
+;; Simplifier: No positive/negative tests
+;; Simplifier: Use only proved local simps
+;; Simplifier: No automatic closing test
+;; Tree: Keep old versions of proofs
+;; Tree: Show local simprules.
+;; Tree: collapse symbolic execution.
+;; Tree: Disable autozoom and resize by default.
+;; Replay: Use extra heuristics
+;; Replay: Use simprules of old proof only
+;; Replay: Use simprules of old proofsteps only
+;; Replay: Adjust types of old proof to polymorphic ones
+;; Replay: Do not adjust with renaming
+;; Replay some proofs: Invalidate incomplete replays
+;; Replay some proofs: Do not save successful replays
+;; Context: Ask if only one rule
+;; Context: Show all rules
+;; Context: Add abbrev command
+;; Context: Add weakening command
+;; Context: Add insert DL lemma
+;; Context: Don't show info command
+;; Context: Don't abbreviate long rewrite rules
+;; Context: Don't show TL rules
+;; Ruleset: Use basic rules
+;; Ruleset: Use heap assignments
+;; Ruleset: Use less aggressive TL assert weakening
+;; Single User: Ignore all locks
+;; View: Print each formula on separate line
+;; View: Always show RGI in Rgbox/dia
+;; View: Show Ind-Hyp
+;; View: Pretty print html
+;; View: Show no specs in hot lemmas
+;; Config: Allow only proved local lemmas
+;; Config: Do not compute partial matches for quantifiers
+;; Config: Don't warn about subsignature
+;; Config: Use SMT solvers
+;; Config: Check simplifier flags in files
+;; Tree: collapse closed branches
+;; Tree: no lemma names.
+;; Tree: number nodes.
+;; Tree: reverse.
+;; Tree: no reuse.
+;; Tree: don't open window.
+;; Tree: Show logic trees
+;; Tree: Show logic test trees
+;; Tree: Don't recycle tree window
+;; Tree: Update on each step
+;; Tree: Don't update on interaction
+;; Tree: Don't show trees
+;; Tree: Don't update status on each step
+;; CounterExample: Don't Show infos
+;; Produce postscript from LaTeX
+;; Don't sort theorems in base
+;; Log history for theorems
+;; Simplifier: Do not store named rules
+;; Trace Simplifier: Show successful toplevel behavior
+;; Trace Simplifier: Show unsuccessful toplevel behavior
+;; Trace Simplifier: Show behavior in recursive calls
+;; Trace Simplifier: Show successful simplification of subformulas
+;; Trace Simplifier: Show full details for subformulas
+;; Trace Simplifier: Show subst equation attempts
+;; Trace Simplifier: Show side condition tests
+;; Trace Simplifier: Show side condition tests in recursive calls
+;; Trace Simplifier: Show failed recursive side condition tests
+;; Trace Simplifier: Show forwarding tests
+;; Trace Simplifier: Show forwarding tests in recursive calls
+;; Trace Simplifier: Show failed recursive forwarding tests
+;; Replay some proofs: Finally enter proved state
+;; Replay: Configure replay
+;; Replay: Abort if replay failed
+;; Replay: Careful replay
+;; Replay: Don't adjust substs
+;; Symbolic execution (no rec. ite-unfold)
+;; Accept unknown features
+
+;; simplifier:
+
+;;       simp add <feature>
+;;       simp delete <feature>
+;;       forward add <feature>
+;;       forward delete <feature>
+
+configs:
+
+;; no exit all
+;; no work on library
+;; ignore all errors
+;; TL with exceptions
+;; ACI rewriting
+

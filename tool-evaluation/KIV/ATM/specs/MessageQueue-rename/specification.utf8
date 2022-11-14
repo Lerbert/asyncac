@@ -1,0 +1,9 @@
+rename MessageList by morphism
+
+  MessageList -> MessageQueue;
+  []          -> empty;
+  first       -> top;
+  rest        -> dequeue;
+  +l          -> +l;
+
+end rename

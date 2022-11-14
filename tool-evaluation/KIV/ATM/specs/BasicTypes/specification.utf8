@@ -1,0 +1,30 @@
+data specification
+       using BasicSorts
+
+  Event = card(cCard : CardId)
+        | PIN(pPIN : Pin)
+        | verify(cVerify : CardId ; pVerify : Pin) | reenterPIN
+        | keepCard
+        | markInvalid(cMarkInvalid : CardId)
+        | verified                                 | ejectCard
+        | PINEnteredCompl  | VerifiedCompl         | VerifyingCompl 
+        | VeriSuccessCompl | VeriFailCompl;
+  Port = userCom | bankCom | atmCom | atmCompl | bankCompl;
+  Message = msg(portMsg : Port ; evtMsg : Event);
+  AtmCtrl = Idle | CardEntered | PINEntered | Verifying | Verified;
+  AtmConf = atmConf(ctrl : AtmCtrl; cardId : CardId; pin : Pin; trialsNum : nat);
+  BankCtrl = Idle | Verifying | VeriSuccess | VeriFail;
+  BankConf = bankConf(ctrl : BankCtrl; wasVerified : nat);
+
+variables e : Event;
+          port : Port;
+          sa : AtmCtrl;
+          ca : AtmConf;
+          sb : BankCtrl;
+          cb : BankConf;
+          c  : CardId;
+          p  : Pin;
+          m  : Message;
+          n  : nat;
+
+end data specification

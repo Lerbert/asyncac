@@ -1,0 +1,165 @@
+specification
+
+       using MessageList, Conf
+
+predicates
+  dist      : MessageList × MessageQueue × MessageQueue × MessageQueue
+                          × MessageQueue;
+  consume   : Message     × MessageQueue × MessageQueue × MessageQueue
+                          × MessageQueue;
+  atmInit   : AtmConf;
+  atmTrans  : AtmConf  × Message × MessageList × AtmConf;
+  bankInit  : BankConf;
+  bankTrans : BankConf × Message × MessageList × BankConf;
+  trans     : Conf × Message × MessageList × Conf;
+  init      : Conf;
+  invar     : Conf;
+  safe      : Conf;
+
+variables
+  c,c1,c2                 : CardId ;
+  m,n,w,w1,w2,t,t1,t2     : nat;
+  x,y,input               : Message;
+  xs,ys,output,output'    : MessageList;
+  q,qa,qa1,qa2,qb,qb1,qb2 : MessageQueue;
+  sa,sa1,sa2              : AtmCtrl;
+  ca,ca1,ca2              : AtmConf;
+  sb,sb1,sb2              : BankCtrl;
+  cb,cb1,cb2              : BankConf;
+  g,g1,g2                 : Conf;
+  
+  
+axioms
+  atmInit-def:    atmInit(ca)  <-> ctrl(ca) = Idle;
+    used for: s, ls;
+  bankInit-def:   bankInit(cb) <-> ctrl(cb) = Idle;
+    used for: s, ls;
+  init-def:     init(conf(ca,qa,cb,qb))
+            <-> atmInit(ca) ∧ bankInit(cb) ∧ qa = empty ∧ qb = empty;
+    used for: s, ls;
+  
+  atmTrans-def: atmTrans(ca1, input, output, ca2)
+    <-> ( ∃ c : CardId, p : Pin
+          .   (   ctrl(ca1) = Idle
+                ∧ input = msg(userCom,card(c))
+                ∧ output = [] ∧ cardId(ca2) = c ∧ ctrl(ca2) = CardEntered
+                ∧ pin(ca2) = pin(ca1) ∧ trialsNum(ca2) = trialsNum(ca1)           )
+            ∨ (   ctrl(ca1) = CardEntered
+                ∧ input = msg(userCom,PIN(p))
+                ∧ output = (msg(atmCompl,PINEnteredCompl) +l [])
+                ∧ pin(ca2) = p
+                ∧ ctrl(ca2) = PINEntered
+                ∧ cardId(ca2) = cardId(ca1) ∧ trialsNum(ca2) = trialsNum(ca1)           )
+            ∨ (   ctrl(ca1) = PINEntered
+                ∧ input = msg(atmCompl,PINEnteredCompl)
+                ∧ output = (msg(bankCom,verify(cardId(ca1),pin(ca1))) +l [])
+                ∧ ctrl(ca2) = Verifying
+                ∧ cardId(ca2) = cardId(ca1) ∧ pin(ca2) = pin(ca1) ∧ trialsNum(ca2) = trialsNum(ca1) )
+            ∨ (   ctrl(ca1) = Verifying
+                ∧ input = msg(bankCom,reenterPIN)
+                ∧ trialsNum(ca1) <  3
+                ∧ output = []
+                ∧ trialsNum(ca2) = trialsNum(ca1) + 1
+                ∧ ctrl(ca2) = CardEntered
+                ∧ cardId(ca2) = cardId(ca1) ∧ pin(ca2) = pin(ca1)           )
+            ∨ (   ctrl(ca1) = Verifying
+                ∧ input = msg(bankCom,reenterPIN) ∧ trialsNum(ca1) ≥ 3
+                ∧ output = (msg(userCom,keepCard) +l [])
+                ∧ trialsNum(ca2) = 0
+                ∧ ctrl(ca2) = Idle
+                ∧ cardId(ca2) = cardId(ca1) ∧ pin(ca2) = pin(ca1)           )
+            ∨ (   ctrl(ca1) = Verifying
+                ∧ input = msg(bankCom,verified)
+                ∧ output = (msg(atmCompl,VerifiedCompl) +l [])
+                ∧ ctrl(ca2) = Verified
+                ∧ cardId(ca2) = cardId(ca1) ∧ pin(ca2) = pin(ca1) ∧ trialsNum(ca2) = trialsNum(ca1) )
+            ∨ (   ctrl(ca1) = Verified
+                ∧ input = msg(atmCompl,VerifiedCompl)
+                ∧ output = (msg(userCom,ejectCard) +l [])
+                ∧ trialsNum(ca2) = 0
+                ∧ ctrl(ca2) = Idle
+                ∧ cardId(ca2) = cardId(ca1) ∧ pin(ca2) = pin(ca1)           )
+        ); used for: s, ls;
+
+  bankTrans-def: bankTrans(cb1, input, output, cb2)
+    <-> (
+          ∃ c : CardId, p : Pin
+          .   (   ctrl(cb1) = Idle
+                ∧ input = msg(atmCom,verify(c,p))
+                ∧ output = (msg(bankCompl,VerifyingCompl) +l [])
+                ∧ ctrl(cb2) = Verifying
+                ∧ wasVerified(cb2) = 0  )
+            ∨ (   ctrl(cb1) = Verifying
+                ∧ input = msg(bankCompl,VerifyingCompl)
+                ∧ output = (msg(bankCompl,VeriSuccessCompl) +l [])
+                ∧ wasVerified(cb2) = 1
+                ∧ ctrl(cb2) = VeriSuccess         )
+            ∨ (   ctrl(cb1) = Verifying
+                ∧ input = msg(bankCompl,VerifyingCompl)
+                ∧ output = (msg(bankCompl,VeriFailCompl) +l [])
+                ∧ ctrl(cb2) = VeriFail
+                ∧ wasVerified(cb2) = wasVerified(cb1) )
+            ∨ (   ctrl(cb1) = VeriSuccess
+                ∧ input = msg(bankCompl,VeriSuccessCompl)
+                ∧ output = (msg(atmCom,verified) +l [])
+                ∧ wasVerified(cb2) = wasVerified(cb1)
+                ∧ ctrl(cb2) = Idle                )
+            ∨ (   ctrl(cb1) = VeriFail
+                ∧ input = msg(bankCompl,VeriFailCompl)
+                ∧ output = (msg(atmCom,reenterPIN) +l [])
+                ∧ ctrl(cb2) = Idle
+                ∧ wasVerified(cb2) = wasVerified(cb1) )
+        ); used for: s, ls;
+  
+  dist-empty:   dist([], qa1, qa2, qb1, qb2) <-> qa2 = qa1 ∧ qb2 = qb1; used for: s, ls;
+  
+  dist-userCom:     dist(msg(userCom,   e) +l output, qa1, qa2, qb1, qb2) <-> dist(output, qa1,                            qa2, qb1,                             qb2); used for: s, ls;
+  dist-bankCom:     dist(msg(bankCom,   e) +l output, qa1, qa2, qb1, qb2) <-> dist(output, qa1,                            qa2, enqueue(msg(atmCom,    e), qb1), qb2); used for: s, ls;
+  dist-atmCom:      dist(msg(atmCom,    e) +l output, qa1, qa2, qb1, qb2) <-> dist(output, enqueue(msg(bankCom,  e), qa1), qa2, qb1,                             qb2); used for: s, ls;
+  dist-bankCompl:   dist(msg(bankCompl, e) +l output, qa1, qa2, qb1, qb2) <-> dist(output, qa1,                            qa2, enqueue(msg(bankCompl, e), qb1), qb2); used for: s, ls;
+  dist-atmCompl:    dist(msg(atmCompl,  e) +l output, qa1, qa2, qb1, qb2) <-> dist(output, enqueue(msg(atmCompl, e), qa1), qa2, qb1,                             qb2); used for: s, ls;
+  
+  consume-extern-userCom:    consume(msg(userCom,    e), qa1, qa2, qb1, qb2) <-> qa1 = qa2                     ∧ qb1 = qb2                     ; used for: s, ls;
+  consume-intern-bankCom:    consume(msg(bankCom,    e), qa1, qa2, qb1, qb2) <-> qa1 = msg(bankCom,  e) +l qa2 ∧ qb1 = qb2                     ; used for: s, ls;
+  consume-intern-atmCom:     consume(msg(atmCom,     e), qa1, qa2, qb1, qb2) <-> qa1 = qa2                     ∧ qb1 = msg(atmCom,    e) +l qb2; used for: s, ls;
+  consume-intern-bankCompl:  consume(msg(bankCompl,  e), qa1, qa2, qb1, qb2) <-> qa1 = qa2                     ∧ qb1 = msg(bankCompl, e) +l qb2; used for: s, ls;
+  consume-intern-atmCompl:   consume(msg(atmCompl,   e), qa1, qa2, qb1, qb2) <-> qa1 = msg(atmCompl, e) +l qa2 ∧ qb1 = qb2                     ; used for: s, ls;
+  
+  trans-def:
+        trans(conf(ca1,qa1,cb1,qb1),input,output,g2)
+    <-> ∃ qa, qb . dist(output,qa,qaConf(g2),qb,qbConf(g2)) ∧ consume(input, qa1, qa, qb1, qb)
+                      ∧ ( ( atmTrans(ca1,input,output,caConf(g2))  ∧ cbConf(g2) = cb1 )
+                          ∨
+                          ( bankTrans(cb1,input,output,cbConf(g2)) ∧ caConf(g2) = ca1 )
+                        ); used for: s, ls;
+
+  safe-def: safe(g) <-> ( ctrl(caConf(g)) = Verified
+                     -> wasVerified(cbConf(g)) = 1 ); used for: ls;
+
+  invar-def: invar(conf(ca,qa,cb,qb)) <-> ∃ x.
+      (   ctrl(ca) = Idle        ∧ ctrl(cb) = Idle
+        ∧ qa = empty             ∧ qb = empty                      )
+    ∨ (   ctrl(ca) = CardEntered ∧ ctrl(cb) = Idle
+        ∧ qa = empty ∧ qb = empty                                  )
+    ∨ (   ctrl(ca) = PINEntered  ∧ ctrl(cb) = Idle
+        ∧ qa = enqueue(x,empty)  ∧ qb = empty )
+    ∨ (   ctrl(ca) = Verifying   ∧ ctrl(cb) = Idle
+        ∧ qa = empty ∧ qb = enqueue(x,empty)                       )
+    ∨ (   ctrl(ca) = Verifying   ∧ ctrl(cb) = Verifying
+        ∧ qa = empty             ∧ qb = enqueue(x,empty)           )
+    ∨ (   ctrl(ca) = Verifying   ∧ ctrl(cb) = VeriSuccess
+        ∧ qa = empty ∧ qb = enqueue(x,empty)
+                                             ∧ wasVerified(cb) = 1 ) 
+    ∨ (   ctrl(ca) = Verifying   ∧ ctrl(cb) = VeriFail
+        ∧ qa = empty             ∧ qb = enqueue(x,empty)           )
+    ∨ (   ctrl(ca) = Verifying   ∧ ctrl(cb) = Idle
+        ∧ qa = enqueue(msg(bankCom,reenterPIN),empty) ∧ qb = empty )
+    ∨ (   ctrl(ca) = Verifying   ∧ ctrl(cb) = Idle
+        ∧ qa = enqueue(msg(bankCom,verified),empty)   ∧ qb = empty
+                                             ∧ wasVerified(cb) = 1 )
+    ∨ (   ctrl(ca) = Verified    ∧ ctrl(cb) = Idle
+        ∧ qa = enqueue(x,empty)                       ∧ qb = empty
+                                             ∧ wasVerified(cb) = 1 )
+  ; used for: ls;
+
+end specification

@@ -1,0 +1,11 @@
+data specification
+  using MessageQueue
+  
+  Conf = conf(cxConf : XConf; qxConf : MessageQueue; cyConf : YConf; qyConf : MessageQueue);
+  
+variables g : Conf ;
+          cx : XConf ;
+          cy : YConf ;
+          qx , qy : MessageQueue ;
+
+end data specification

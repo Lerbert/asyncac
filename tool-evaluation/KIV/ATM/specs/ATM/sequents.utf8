@@ -1,0 +1,94 @@
+lemmas
+  Safe: invar(g) -> safe(g);
+
+  Init: init(g) -> invar(g);
+  
+  Trans1: invar(conf(atmConf(Idle,c1,p1,t1),       qa1, cb1, qb1))
+        → invar(conf(atmConf(CardEntered,c,p1,t1), qa1, cb1, qb1));
+        used for: s, ls;
+        
+  Trans2: invar(conf(atmConf(CardEntered,c1,p1,t1), qa1,                                        cb1, qb1))
+        → invar(conf(atmConf(PINEntered, c1,p,t1),  enqueue(msg(atmCompl,PINEnteredCompl),qa1), cb1, qb1));
+        used for: s, ls;
+        
+  Trans3: invar(conf(atmConf(PINEntered,c1,p1,t1), msg(atmCompl,PINEnteredCompl) +l qa1, cb1, qb1                                   ))
+        → invar(conf(atmConf(Verifying, c1,p1,t1), qa1,                                  cb1, enqueue(msg(atmCom,verify(c1,p1)),qb1)));
+        used for: s, ls;
+           
+  Trans4: invar(conf(atmConf(Verifying,  c1,p1,t1),     msg(bankCom,reenterPIN) +l qa1, cb1, qb1)) ∧ t1 < 3
+        → invar(conf(atmConf(CardEntered,c1,p1,t1 + 1), qa1,                            cb1, qb1));
+        used for: s, ls;
+
+  Trans5: invar(conf(atmConf(Verifying,c1,p1,t1),msg(bankCom,reenterPIN) +l qa1, cb1, qb1)) ∧ 3 ≤ t1
+        → invar(conf(atmConf(Idle,     c1,p1,0 ),qa1,                            cb1, qb1));
+        used for: s, ls;
+        
+  Trans6: invar(conf(atmConf(Verifying,c1,p1,t1),msg(bankCom,verified) +l qa1,             cb1, qb1))
+        → invar(conf(atmConf(Verified,c1,p1,t1), enqueue(msg(atmCompl,VerifiedCompl),qa1), cb1, qb1));
+        used for: s, ls;
+
+  Trans7: invar(conf(atmConf(Verified,c1,p1,t1), msg(atmCompl,VerifiedCompl) +l qa1, cb1, qb1))
+        → invar(conf(atmConf(Idle,c1,p1,0),      qa1,                                cb1, qb1));
+        used for: s, ls;
+
+  Trans8: invar(conf(ca1, qa1, bankConf(Idle,     w1), msg(atmCom,verify(c,p)) +l qb1             ))
+        → invar(conf(ca1, qa1, bankConf(Verifying,0 ), enqueue(msg(bankCompl,VerifyingCompl), qb1)));
+        used for: s, ls;
+        
+  Trans9: invar(conf(ca1, qa1, bankConf(Verifying,  w1), msg(bankCompl,VerifyingCompl) +l qb1         ))
+        → invar(conf(ca1, qa1, bankConf(VeriSuccess,1 ), enqueue(msg(bankCompl,VeriSuccessCompl), qb1)));
+        used for: s, ls;
+        
+  Trans10: invar(conf(ca1, qa1, bankConf(Verifying, w1), msg(bankCompl,VerifyingCompl) +l qb1      ))
+         → invar(conf(ca1, qa1, bankConf(VeriFail,  w1), enqueue(msg(bankCompl,VeriFailCompl), qb1)));
+         used for: s, ls;
+
+  Trans11: invar(conf(ca1, qa1,                                bankConf(VeriSuccess,w1), msg(bankCompl,VeriSuccessCompl) +l qb1))
+         → invar(conf(ca1, enqueue(msg(bankCom,verified),qa1), bankConf(Idle,       w1), qb1                                   ));
+         used for: s, ls;
+
+  Trans12: invar(conf(ca1, qa1,                                  bankConf(VeriFail,w1), msg(bankCompl,VeriFailCompl) +l qb1))
+         → invar(conf(ca1, enqueue(msg(bankCom,reenterPIN),qa1), bankConf(Idle,    w1), qb1                                ));
+         used for: s, ls;
+  
+  trans-ex1: trans(
+  		conf(atmConf(Verifying, c, p, 3), msg(bankCom, reenterPIN) +l qa, cb, qb),
+  		msg(bankCom, reenterPIN),
+  		msg(userCom, keepCard) +l [],
+  		conf(atmConf(Idle, c, p, 0), qa, cb, qb)
+  	);
+  
+  trans-ex2: trans(
+  		conf(atmConf(Verifying, c, p, t), msg(bankCom, verified) +l qa, cb, qb),
+  		msg(bankCom, verified),
+  		msg(atmCompl, VerifiedCompl) +l [],
+  		conf(atmConf(Verified, c, p, t), enqueue(msg(atmCompl, VerifiedCompl), qa), cb, qb)
+  	);
+  
+  trans-ex3: trans(
+  		conf(atmConf(PINEntered, c, p, t), msg(atmCompl, PINEnteredCompl) +l qa, cb, qb),
+  		msg(atmCompl, PINEnteredCompl),
+  		msg(bankCom, verify(c, p)) +l [],
+  		conf(atmConf(Verifying, c, p, t), qa, cb, enqueue(msg(atmCom, verify(c, p)), qb))
+  	);
+  	
+  trans-ex4: trans(
+  		conf(ca, qa, bankConf(Idle, w), msg(atmCom, verify(c, p)) +l qb),
+  		msg(atmCom, verify(c, p)),
+  		msg(bankCompl, VerifyingCompl) +l [],
+  		conf(ca, qa, bankConf(Verifying, 0), enqueue(msg(bankCompl, VerifyingCompl), qb))
+  	);
+  	
+  trans-ex5: trans(
+  		conf(ca, qa, bankConf(Verifying, w), msg(bankCompl, VerifyingCompl) +l qb),
+  		msg(bankCompl, VerifyingCompl),
+  		msg(bankCompl, VeriSuccessCompl) +l [],
+  		conf(ca, qa, bankConf(VeriSuccess, 1), enqueue(msg(bankCompl, VeriSuccessCompl), qb))
+  	);
+  	
+  trans-ex6: trans(
+  		conf(ca, qa, bankConf(Verifying, w), msg(bankCompl, VerifyingCompl) +l qb),
+  		msg(bankCompl, VerifyingCompl),
+  		msg(bankCompl, VeriFailCompl) +l [],
+  		conf(ca, qa, bankConf(VeriFail, w), enqueue(msg(bankCompl, VeriFailCompl), qb))
+  	);

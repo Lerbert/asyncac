@@ -1,0 +1,24 @@
+enrich MessageList-data with
+
+functions
+  	. ++ . : MessageList ×  MessageList → MessageList;
+
+predicates
+	. ∈ . : Message × MessageList;
+
+variables 
+	x,  y  : Message;
+	xs, ys : MessageList;
+
+axioms
+  concat-empty:   []        ++ ys =             ys;
+    used for: s, ls;
+  concat-cons:    (x +l xs) ++ ys = x +l (xs ++ ys);
+    used for: s, ls;
+    
+  in-empty: ¬ x ∈ [];
+  	used for: s, ls;
+  in-cons: x ∈ y +l ys ↔ x = y ∨ x ∈ ys;
+  	used for: s, ls;
+
+end enrich

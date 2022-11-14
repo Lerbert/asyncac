@@ -1,0 +1,11 @@
+data specification
+       using BasicTypes
+
+MessageList = [] | . +l . ( first : Message
+                          ; rest  : MessageList
+                          );
+
+variables ms : MessageList;
+          m  : Message;
+
+end data specification

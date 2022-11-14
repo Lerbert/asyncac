@@ -1,0 +1,6 @@
+enrich nat with
+
+sorts CardId;
+      Pin;
+
+end enrich

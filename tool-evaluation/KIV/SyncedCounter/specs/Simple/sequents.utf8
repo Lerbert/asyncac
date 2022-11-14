@@ -1,0 +1,50 @@
+
+lemmas	
+	Safe: invar(g) → safe(g);
+	
+	Init: init(g)  → invar(g);
+	
+	Trans1: invar(conf(xConf(Stable,  cnt),    qx, cy,                         qy))
+		  → invar(conf(xConf(WaitAck, cnt + 1), qx, cy, enqueue(msg(xCom, inc), qy)));
+		  used for: s, ls;
+		  
+	Trans2: invar(conf(xConf(WaitAck, cnt), msg(yCom, ack) +l qx, cy, qy))
+		  → invar(conf(xConf(Stable,  cnt), qx,                   cy, qy));
+		  used for: s, ls;
+
+	Trans3: invar(conf(cx, qx,                          yConf(Counting, cnt),    msg(xCom, inc) +l qy))
+		  → invar(conf(cx, enqueue(msg(yCom, ack), qx), yConf(Counting, cnt + 1), qy                  ));
+		  used for: s, ls;
+		  
+	
+	trans-ex1: trans(conf(xConf(Stable,  2), empty, cy, empty), msg(userCom, start), msg(yCom, inc) +l [], conf(xConf(WaitAck,  3), empty, cy, enqueue(msg(xCom, inc), empty)));
+	trans-ex2: trans(conf(xConf(WaitAck, 2), enqueue(msg(yCom, ack), empty), cy, empty), msg(yCom, ack), [], conf(xConf(Stable, 2), empty, cy, empty));
+	
+	trans-ex3: ¬ trans(conf(xConf(WaitAck, 2), enqueue(msg(yCom, inc), empty), cy, empty), msg(yCom, inc), [], conf(xConf(Stable, 2), empty, cy, empty));
+	trans-ex4: ¬ trans(conf(xConf(WaitAck, 2), empty, cy, empty), msg(yCom, ack), [], conf(xConf(Stable, 2), empty, cy, empty));
+
+;; <name> : <sequent> ;
+;; used for : <some_flags> ; comment : <some_comment> ;
+
+;;; END
+
+;;;****************************************************************************************
+;;; This file is used to add additional theorems.
+;;; 1. Two semicolons start a line comment
+;;; 2. (: ... :) delimit a comment. They can be nested!
+;;; 3. Reading stops after ;;; END
+;;; 4. Theorems have the form
+
+<name> : <sequent> ; used for : <some_flags> ; comment : <some_comment> ;
+
+     'used for' and 'comment' are optional.
+     <some_comment> may be any text not containing a ;
+     <some_flags> is a comma separated list with information that the lemma should
+     be used as a simplifier rule or something like that. Since you can add or delete
+     simplifier rules etc. by menu commands, you can always omit 'used for' if you want.
+     Note: changing the flags or the comment only works if the sequent is changed too!!!
+     possible flags are:
+
+     s (simplifier rule), ls (local simplifier rule), f (forward), lf (local forward),
+     e (elimination), c (cut), lc (local cut)
+

@@ -1,0 +1,11 @@
+data specification
+  using MessageQueue
+  
+  Conf = conf(caConf : AtmConf; qaConf : MessageQueue; cbConf : BankConf; qbConf : MessageQueue);
+  
+variables g : Conf ;
+          ca : AtmConf ;
+          cb : BankConf ;
+          qa , qb : MessageQueue ;
+
+end data specification

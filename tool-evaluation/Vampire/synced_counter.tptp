@@ -1,0 +1,218 @@
+%%%% Port, Event, Message
+
+tff(port, type, port : $tType).
+tff(port_userCom, type, userCom : port).
+tff(port_yCom, type, yCom : port).
+tff(port_xCom, type, xCom : port).
+tff(port_closed, axiom, ! [P : port] : (P = userCom | P = yCom | P = xCom)).
+tff(port_disj, axiom, userCom != yCom & userCom != xCom & yCom != xCom).
+
+tff(event, type, event : $tType).
+tff(event_start, type, start : event).
+tff(event_inc, type, inc : event).
+tff(event_ack, type, ack : event).
+tff(event_closed, axiom, ! [E : event] : (E = start | E = inc | E = ack)).
+tff(event_disj, axiom, start != inc & start != ack & inc != ack).
+
+tff(message, type, message : $tType).
+tff(message_cons, type, msg : (port * event) > message).
+tff(message_inj, axiom, ! [P1 : port, P2 : port, E1 : event, E2 : event] : (msg(P1, E1) = msg(P2, E2) <=> (P1 = P2 & E1 = E2))).
+
+%%%% Message List
+
+tff(list, type, messageList : $tType).
+tff(list_nil, type, nil : messageList).
+tff(list_cons, type, cons : (message * messageList) > messageList).
+tff(list_inj, axiom, ! [M1 : message, M2 : message, MS1 : messageList, MS2 : messageList] : (cons(M1, MS1) = cons(M2, MS2) <=> (M1 = M2 & MS1 = MS2))).
+tff(list_disj, axiom, ! [M : message, MS : messageList] : nil != cons(M, MS)).
+
+tff(head_type, type, head : messageList > message).
+tff(head_rec, axiom, ! [M : message, MS : messageList] : (
+    head(cons(M, MS)) = M
+)).
+
+tff(tail_type, type, tail : messageList > messageList).
+tff(tail_rec, axiom, ! [M : message, MS : messageList] : (
+    tail(cons(M, MS)) = MS
+)).
+
+tff(enqueue_type, type, enqueue : (message * messageList) > messageList).
+tff(enqueue_base, axiom, ! [M : message] : (
+    enqueue(M, nil) = cons(M, nil)
+)).
+tff(enqueue_rec, axiom, ! [N : message, M : message, MS : messageList] : (
+    enqueue(N, cons(M, MS)) = cons(M, enqueue(N, MS))
+)).
+
+%%%% X
+
+tff(x_ctrl, type, xCtrl : $tType).
+tff(x_ctrl_stable, type, stable : xCtrl).
+tff(x_ctrl_waitAck, type, waitAck : xCtrl).
+tff(x_ctrl_closed, axiom, ! [C : xCtrl] : (C = stable | C = waitAck)).
+tff(x_ctrl_disj, axiom, stable != waitAck).
+
+tff(x_conf, type, xConf_t : $tType).
+tff(x_conf_cons, type, xConf : (xCtrl * $int) > xConf_t).
+tff(x_cons_inj, axiom, ! [C1 : xCtrl, C2 : xCtrl, X1 : $int, X2 : $int] : (xConf(C1, X1) = xConf(C2, X2) <=> (C1 = C2 & X1 = X2))).
+
+tff(x_init_type, type, x_init : xConf_t > $o).
+tff(x_init, axiom, ! [C : xCtrl, X : $int] : (
+    x_init(xConf(C, X)) <=> (C = stable & X = 0)
+)).
+
+tff(x_trans_type, type, x_trans : (xConf_t * message * messageList * xConf_t) > $o).
+tff(x_trans, axiom, ! [C1 : xCtrl, C2 : xCtrl, X1 : $int, X2 : $int, I : message, O : messageList] : (
+    x_trans(xConf(C1, X1), I, O, xConf(C2, X2)) <=> (
+        (C1 = stable & I = msg(userCom, start) & O = cons(msg(yCom, inc), nil) & C2 = waitAck & X2 = $sum(X1, 1))
+        | (C1 = waitAck & I = msg(yCom, ack) & O = nil & C2 = stable & X2 = X1)
+    )
+)).
+
+%%%% Y
+
+tff(y_ctrl, type, yCtrl : $tType).
+tff(y_ctrl_counting, type, counting : yCtrl).
+tff(y_ctrl_closed, axiom, ! [C : yCtrl] : C = counting).
+
+tff(y_conf, type, yConf_t : $tType).
+tff(y_conf_cons, type, yConf : (yCtrl * $int) > yConf_t).
+tff(y_cons_inj, axiom, ! [C1 : yCtrl, C2 : yCtrl, Y1 : $int, Y2 : $int] : (yConf(C1, Y1) = yConf(C2, Y2) <=> (C1 = C2 & Y1 = Y2))).
+
+tff(y_init_type, type, y_init : yConf_t > $o).
+tff(y_init, axiom, ! [C : yCtrl, Y : $int] : (
+    y_init(yConf(C, Y)) <=> (C = counting & Y = 0)
+)).
+
+tff(y_trans_type, type, y_trans : (yConf_t * message * messageList * yConf_t) > $o).
+tff(y_trans, axiom, ! [C1 : yCtrl, C2 : yCtrl, Y1 : $int, Y2 : $int, I : message, O : messageList] : (
+    y_trans(yConf(C1, Y1), I, O, yConf(C2, Y2)) <=> (
+        (C1 = counting & I = msg(xCom, inc) & O = cons(msg(xCom, ack), nil) & C2 = counting & Y2 = $sum(Y1, 1))
+    )
+)).
+
+%%% Parallel composition
+
+tff(conf, type, conf_t : $tType).
+tff(conf_cons, type, conf : (xConf_t * messageList * yConf_t * messageList) > conf_t).
+tff(conf_inj, axiom, ! [CX1 : xConf_t, CX2 : xConf_t, QX1 : messageList, QX2 : messageList, CY1 : yConf_t, CY2 : yConf_t, QY1 : messageList, QY2 : messageList] : (conf(CX1, QX1, CY1, QY1) = conf(CX2, QX2, CY2, QY2) <=> (CX1 = CX2 & QX1 = QX2 & CY1 = CY2 & QY1 = QY2))).
+
+tff(init_type, type, init : conf_t > $o).
+tff(init, axiom, ! [CX : xConf_t, QX : messageList, CY : yConf_t, QY : messageList] : (
+    init(conf(CX, QX, CY, QY)) <=> (
+        x_init(CX) & y_init(CY) & QX = nil & QY = nil
+    )
+)).
+
+tff(dist_type, type, dist : (messageList * messageList * messageList * messageList * messageList) > $o).
+tff(dist_nil, axiom, ! [QX1 : messageList, QX2 : messageList, QY1 : messageList, QY2 : messageList] : (
+    dist(nil, QX1, QX2, QY1, QY2) <=> (QX1 = QX2 & QY1 = QY2)
+)).
+tff(dist_userCom, axiom, ! [MS : messageList, E : event, QX1 : messageList, QX2 : messageList, QY1 : messageList, QY2 : messageList] : (
+    dist(cons(msg(userCom, E), MS), QX1, QX2, QY1, QY2) <=> dist(MS, QX1, QX2, QY1, QY2)
+)).
+tff(dist_yCom, axiom, ! [MS : messageList, E : event, QX1 : messageList, QX2 : messageList, QY1 : messageList, QY2 : messageList] : (
+    dist(cons(msg(yCom, E), MS), QX1, QX2, QY1, QY2) <=> dist(MS, QX1, QX2, enqueue(msg(xCom, E), QY1), QY2)
+)).
+tff(dist_xCom, axiom, ! [MS : messageList, E : event, QX1 : messageList, QX2 : messageList, QY1 : messageList, QY2 : messageList] : (
+    dist(cons(msg(xCom, E), MS), QX1, QX2, QY1, QY2) <=> dist(MS, enqueue(msg(yCom, E), QX1), QX2, QY1, QY2)
+)).
+
+tff(consume_type, type, consume : (message * messageList * messageList * messageList * messageList) > $o).
+tff(consume_userCom, axiom, ! [E : event, QX1 : messageList, QX2 : messageList, QY1 : messageList, QY2 : messageList] : (
+    consume(msg(userCom, E), QX1, QX2, QY1, QY2) <=> (QX1 = QX2 & QY1 = QY2)
+)).
+tff(consume_yCom, axiom, ! [E : event, QX1 : messageList, QX2 : messageList, QY1 : messageList, QY2 : messageList] : (
+    consume(msg(yCom, E), QX1, QX2, QY1, QY2) <=> (QX1 = cons(msg(yCom, E), QX2) & QY1 = QY2)
+)).
+tff(consume_xCom, axiom, ! [E : event, QX1 : messageList, QX2 : messageList, QY1 : messageList, QY2 : messageList] : (
+    consume(msg(xCom, E), QX1, QX2, QY1, QY2) <=> (QX1 = QX2 & QY1 = cons(msg(xCom, E), QY2))
+)).
+
+tff(trans_type, type, trans : (conf_t * message * messageList * conf_t) > $o).
+tff(trans, axiom, ! [CX1 : xConf_t, CX2 : xConf_t, CY1 : yConf_t, CY2 : yConf_t, QX1 : messageList, QX2 : messageList, QY1 : messageList, QY2 : messageList, I : message, O : messageList] : (
+    trans(conf(CX1, QX1, CY1, QY1), I, O, conf(CX2, QX2, CY2, QY2)) <=> (
+        ? [QX : messageList, QY : messageList] : (
+            dist(O, QX, QX2, QY, QY2)
+            & consume(I, QX1, QX, QY1, QY)
+            & (
+                (x_trans(CX1, I, O, CX2) & CY2 = CY1)
+                | (y_trans(CY1, I, O, CY2) & CX2 = CX1)
+            )
+        )
+    )
+)).
+
+tff(safe_type, type, safe : conf_t > $o).
+tff(safe, axiom, ! [CX : xCtrl, CY : yCtrl, QX : messageList, QY : messageList, X : $int, Y : $int] : (
+    safe(conf(xConf(CX, X), QX, yConf(CY, Y), QY)) <=>
+        (~(CX = stable) | X = Y)
+)).
+
+tff(invar_type, type, invar : conf_t > $o).
+tff(invar, axiom, ! [CX : xCtrl, CY : yCtrl, QX : messageList, QY : messageList, X : $int, Y : $int] : (
+    invar(conf(xConf(CX, X), QX, yConf(CY, Y), QY)) <=> ? [M : message] : (
+        (CX = stable & CY = counting & QX = nil & QY = nil & X = Y)
+        | (CX = waitAck & CY = counting & QX = nil & QY = cons(M, nil) & X = $sum(Y, 1))
+        | (CX = waitAck & CY = counting & QX = cons(M, nil) & QY = nil & X = Y)
+    )
+)).
+
+% uncomment only one of the below
+
+% tff(invar_safe, conjecture, ! [CX : xCtrl, X : $int, CY : yCtrl, Y : $int, QY : messageList, QX :messageList] : (
+%     invar(conf(xConf(CX, X), QX, yConf(CY, Y), QY)) => safe(conf(xConf(CX, X), QX, yConf(CY, Y), QY))
+% )).
+
+% tff(init_invar, conjecture, ! [CX : xCtrl, X : $int, CY : yCtrl, Y : $int, QY : messageList, QX :messageList] : (
+%     init(conf(xConf(CX, X), QX, yConf(CY, Y), QY)) => invar(conf(xConf(CX, X), QX, yConf(CY, Y), QY))
+% )).
+
+tff(trans_invar, conjecture, ! [
+    CX1 : xCtrl, X1 : $int, CY1 : yCtrl, Y1 : $int, QY1 : messageList, QX1 :messageList,
+    CX2 : xCtrl, X2 : $int, CY2 : yCtrl, Y2 : $int, QY2 : messageList, QX2 :messageList,
+    I : message, O : messageList
+] : (
+    (invar(conf(xConf(CX1, X1), QX1, yConf(CY1, Y1), QY1)) & trans(conf(xConf(CX1, X1), QX1, yConf(CY1, Y1), QY1), I, O, conf(xConf(CX2, X2), QX2, yConf(CY2, Y2), QY2)))
+    => invar(conf(xConf(CX2, X2), QX2, yConf(CY2, Y2), QY2))
+)).
+
+% tff(trans1, conjecture, ! [
+%     CX1 : xCtrl, X1 : $int, CY1 : yCtrl, Y1 : $int, QY1 : messageList, QX1 :messageList,
+%     CX2 : xCtrl, X2 : $int, CY2 : yCtrl, Y2 : $int, QY2 : messageList, QX2 :messageList
+% ] : (
+%     (invar(conf(xConf(CX1, X1), QX1, yConf(CY1, Y1), QY1)) & CX1 = stable & CX2 = waitAck & X2 = $sum(X1, 1) & QX2 = QX1 & CY2 = CY1 & Y2 = Y1 & QY2 = enqueue(msg(xCom, inc), QY1))
+%     => invar(conf(xConf(CX2, X2), QX2, yConf(CY2, Y2), QY2))
+% )).
+
+% tff(trans2, conjecture, ! [
+%     CX1 : xCtrl, X1 : $int, CY1 : yCtrl, Y1 : $int, QY1 : messageList, QX1 :messageList,
+%     CX2 : xCtrl, X2 : $int, CY2 : yCtrl, Y2 : $int, QY2 : messageList, QX2 :messageList
+% ] : (
+%     (invar(conf(xConf(CX1, X1), QX1, yConf(CY1, Y1), QY1)) & CX1 = waitAck & QX1 != nil & head(QX1) = msg(yCom, ack) & CX2 = stable & X2 = X1 & QX2 = tail(QX1) & CY2 = CY1 & Y2 = Y1 & QY2 = QY1)
+%     => invar(conf(xConf(CX2, X2), QX2, yConf(CY2, Y2), QY2))
+% )).
+
+% tff(trans3, conjecture, ! [
+%     CX1 : xCtrl, X1 : $int, CY1 : yCtrl, Y1 : $int, QY1 : messageList, QX1 :messageList,
+%     CX2 : xCtrl, X2 : $int, CY2 : yCtrl, Y2 : $int, QY2 : messageList, QX2 :messageList
+% ] : (
+%     (invar(conf(xConf(CX1, X1), QX1, yConf(CY1, Y1), QY1)) & CY1 = counting & QY1 != nil & head(QY1) = msg(xCom, inc) & CX2 = CX1 & X2 = X1 & QX2 = enqueue(msg(yCom, ack), QX1) & CY2 = counting & Y2 = $sum(Y1, 1) & QY2 = tail(QY1))
+%     => invar(conf(xConf(CX2, X2), QX2, yConf(CY2, Y2), QY2))
+% )).
+
+% tff(trans_ex1, conjecture, ! [CY : yConf_t, QY : messageList] : (
+%     trans(conf(xConf(stable,  2), nil, CY, QY), msg(userCom, start), cons(msg(yCom, inc), nil), conf(xConf(waitAck,  3), nil, CY, enqueue(msg(xCom, inc), QY)))
+% )).
+
+% tff(trans_ex2, conjecture, ! [CY : yConf_t, QY : messageList] : (
+%     trans(conf(xConf(waitAck,  2), enqueue(msg(yCom, ack), nil), CY, QY), msg(yCom, ack), nil, conf(xConf(stable,  2), nil, CY, QY))
+% )).
+
+% tff(trans_ex3, conjecture, ! [CY : yConf_t, QY : messageList] : (
+%     ~ trans(conf(xConf(waitAck, 2), enqueue(msg(yCom, inc), nil), CY, QY), msg(yCom, inc), nil, conf(xConf(stable, 2), nil, CY, QY))
+% )).
+
+% tff(trans_ex4, conjecture, ! [CY : yConf_t, QY : messageList] : (
+%     ~ trans(conf(xConf(waitAck, 2), nil, CY, QY), msg(yCom, ack), nil, conf(xConf(stable, 2), nil, CY, QY))
+% )).

@@ -1,0 +1,17 @@
+enrich MessageQueue-rename with
+
+functions
+	enqueue : Message × MessageQueue → MessageQueue;
+
+variables 
+	q : MessageQueue;
+	m : Message;
+
+
+axioms
+	enqueue-empty: enqueue(m, empty)  = m +l empty;
+		used for: s, ls;
+	enqueue-cons:  enqueue(m, m1 +l q) = m1 +l enqueue(m, q);
+		used for: s, ls;
+
+end enrich

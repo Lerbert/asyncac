@@ -1,0 +1,95 @@
+specification
+	using MessageList, Conf
+
+predicates
+  dist      : MessageList × MessageQueue × MessageQueue × MessageQueue
+                          × MessageQueue;
+  consume   : Message     × MessageQueue × MessageQueue × MessageQueue
+                          × MessageQueue;
+  xInit   : XConf;
+  xTrans  : XConf  × Message × MessageList × XConf;
+  yInit   : YConf;
+  yTrans  : YConf × Message × MessageList × YConf;
+  trans   : Conf × Message × MessageList × Conf;
+  init    : Conf;
+  invar   : Conf;
+  safe    : Conf;
+
+variables
+  m,n,cnt,cnt1,cnt2           : nat;
+  x,y,input               : Message;
+  xs,ys,output,output'    : MessageList;
+  q,qx,qx1,qx2,qy,qy1,qy2 : MessageQueue;
+  sx,sx1,sx2              : XCtrl;
+  cx,cx1,cx2              : XConf;
+  sy,sy1,sy2              : YCtrl;
+  cy,cy1,cy2              : YConf;
+  g,g1,g2                 : Conf;
+  
+  
+axioms
+  xInit-def:    xInit(cx)  <-> ctrl(cx) = Stable ∧ xCnt(cx) = 0;
+    used for: s, ls;
+  yInit-def:    yInit(cy) <-> ctrl(cy) = Counting ∧ yCnt(cy) = 0;
+    used for: s, ls;
+  init-def:     init(conf(cx,qx,cy,qy))
+            <-> xInit(cx) ∧ yInit(cy) ∧ qx = empty ∧ qy = empty;
+    used for: s, ls;
+  
+  xTrans-def: xTrans(cx1, input, output, cx2)
+    <-> ( 
+    		(
+    		  	ctrl(cx1) = Stable
+	          ∧ input = msg(userCom, start)
+	          ∧ output = msg(yCom, inc) +l []
+	          ∧ xCnt(cx2) = xCnt(cx1) +1
+	          ∧ ctrl(cx2) = WaitAck
+    		)
+    	  ∨
+    		(
+    			ctrl(cx1) = WaitAck
+		      ∧ input = msg(yCom, ack)
+		      ∧ output = []
+		      ∧ xCnt(cx2) = xCnt(cx1)
+		      ∧ ctrl(cx2) = Stable
+    		)
+        ); used for: s, ls;
+
+  yTrans-def: yTrans(cy1, input, output, cy2)
+    <-> (
+          	ctrl(cy1) = Counting
+          ∧ input = msg(xCom, inc)
+          ∧ output = msg(xCom, ack) +l []
+          ∧ yCnt(cy2) = yCnt(cy1) +1
+          ∧ ctrl(cy2) = Counting
+        ); used for: s, ls;
+  
+  dist-empty:   dist([], qx1, qx2, qy1, qy2) <-> qx2 = qx1 ∧ qy2 = qy1; used for: s, ls;
+  
+  dist-userCom: dist(msg(userCom,e) +l output, qx1, qx2, qy1, qy2) <-> dist(output, qx1,                        qx2, qy1,                        qy2); used for: s, ls;
+  dist-yCom:    dist(msg(yCom,e) +l output,    qx1, qx2, qy1, qy2) <-> dist(output, qx1,                        qx2, enqueue(msg(xCom, e), qy1), qy2); used for: s, ls;
+  dist-xCom:    dist(msg(xCom,e) +l output,    qx1, qx2, qy1, qy2) <-> dist(output, enqueue(msg(yCom, e), qx1), qx2, qy1,                        qy2); used for: s, ls;
+  
+  consume-extern-userCom: consume(msg(userCom, e), qx1, qx2, qy1, qy2) <-> qx1 = qx2 ∧ qy1 = qy2; used for: s, ls;
+  
+  consume-intern-yCom: consume(msg(yCom, e), qx1, qx2, qy1, qy2) <-> qx1 = msg(yCom, e) +l qx2 ∧ qy1 = qy2; used for: s, ls;
+  
+  consume-intern-xCom: consume(msg(xCom, e), qx1, qx2, qy1, qy2) <-> qx1 = qx2 ∧ qy1 = msg(xCom, e) +l qy2; used for: s, ls;
+  
+  trans-def:
+        trans(conf(cx1, qx1, cy1, qy1), input, output, g2)
+    <-> ∃ qx, qy . dist(output, qx, qxConf(g2), qy, qyConf(g2)) ∧ consume(input, qx1, qx, qy1, qy)
+                      ∧ ( ( xTrans(cx1, input, output, cxConf(g2)) ∧ cyConf(g2) = cy1 )
+                          ∨
+                          ( yTrans(cy1, input, output, cyConf(g2)) ∧ cxConf(g2) = cx1 )
+                        ); used for: s, ls;
+  
+  safe-def: safe(g) <-> (ctrl(cxConf(g)) = Stable → xCnt(cxConf(g)) = yCnt(cyConf(g))); used for: ls;
+  
+  invar-def: invar(conf(cx, qx, cy, qy)) <-> ∃ ms : Message .
+  	  ctrl(cx) = Stable  ∧ ctrl(cy) = Counting ∧ qx = empty ∧ qy = empty              ∧ xCnt(cx) = yCnt(cy)
+  	∨ ctrl(cx) = WaitAck ∧ ctrl(cy) = Counting ∧ qx = empty ∧ qy = enqueue(ms, empty) ∧ xCnt(cx) = yCnt(cy) +1
+  	∨ ctrl(cx) = WaitAck ∧ ctrl(cy) = Counting ∧ qx = enqueue(ms, empty) ∧ qy = empty ∧ xCnt(cx) = yCnt(cy)
+  ; used for: ls;
+  
+end specification

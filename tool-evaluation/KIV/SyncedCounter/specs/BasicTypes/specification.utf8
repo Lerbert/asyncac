@@ -1,0 +1,21 @@
+data specification
+	using nat
+	
+  Event = start | inc | ack;
+  Port = userCom | xCom | yCom;
+  Message = msg(portMsg : Port ; evtMsg : Event);
+  XCtrl = Stable | WaitAck;
+  XConf = xConf(ctrl : XCtrl; xCnt : nat);
+  YCtrl = Counting;
+  YConf = yConf(ctrl : YCtrl; yCnt : nat);
+
+variables e : Event;
+          port : Port;
+          sx : XCtrl;
+          cx : XConf;
+          sy : YCtrl;
+          cy : YConf;
+          m  : Message;
+          n  : nat;
+
+end data specification

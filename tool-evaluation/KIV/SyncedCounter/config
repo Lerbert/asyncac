@@ -1,0 +1,170 @@
+;;; this is a comment
+
+;; heuristics:
+
+;; ### heuristic sets ###
+;;   PL Heuristics + Case Split + Quantifier
+;;   PL Heuristics + Struct. Ind.
+;;   PL Heuristics + Case Splitting
+;;   PL Heuristics
+;;   Cntex Heuristics
+;;   DL Heuristics + Induction
+;;   DL Heuristics + Case Splitting
+;;   DL Heuristics
+;;   TL Heuristics
+;;   TL Heuristics + Case Splitting
+;;   TL Heuristics + Exec
+;;   TL Heuristics + Exec + CS
+;;   TL Heuristics + Breadth First Exec
+;;   RG Heuristics
+;;   RG Heuristics + Case Splitting
+;;   RG Heuristics + CS + Weakening
+
+;; ### single heuristics
+;;   use patterns
+;;   symbolic execution
+;;   execute loop
+;;   exec loop
+;;   structural induction
+;;   Replay
+;;   induction
+;;   simplifier
+;;   strong simplifier
+;;   elimination
+;;   var elimination
+;;   contract and execute
+;;   unfold
+;;   strong unfold
+;;   weak unfold
+;;   calls concrete
+;;   calls nonrecursive
+;;   calls nonrec nowhile
+;;   calls flat
+;;   bounded calls
+;;   split
+;;   conditional
+;;   conditional right split
+;;   conditional left split
+;;   make lemma + continue
+;;   batch mode
+;;   cntex batch mode
+;;   omega
+;;   loop exit
+;;   unwind
+;;   if-then-else split
+;;   pl case distinction
+;;   strong pl case distinction
+;;   dl case distinction
+;;   cut
+;;   constructor cut
+;;   PLUnfold
+;;   strong weakening
+;;   rewrite
+;;   give value
+;;   weak cut
+;;   nonsplitting cut
+;;   axiom cut
+;;   Quantifier closing
+;;   Quantifier
+;;   lemma closing
+;;   apply ind once
+;;   apply VD induction
+;;   proof lemma
+;;   apply ind
+;;   apply ind closing
+;;   close axiom
+;;   prop nonsplit rotate
+;;   prop split rotate
+;;   quant discard
+;;   quant split
+;;   quant inst
+;;   axiom
+;;   prop simplification
+;;   subst equation
+;;   prop split
+;;   smart basic case distinction
+;;   discard quantifier
+;;   subproof
+;;   wrong goal
+;;   tl atomic call
+;;   tl step
+;;   tl switch
+;;   tl step nosplit
+;;   tl nosplit
+;;   tl split
+;;   tl step split
+;;   tl unwind
+;;   tl prefix cut
+;;   tl extract vars
+;;   rg weakening
+;;   rg case distinction
+;;   annotation
+;;   apply program lemma
+
+;;   ### heuristics for basicrules (usebasicrules? options) = T ###
+;;   axiom
+;;   prop simplification
+;;   discard quantifier
+;;   Quantifier closing
+;;   subst equation
+;;   smart basic case distinction
+;;   Quantifier
+;;   prop split
+;;   batch mode
+;;   structural induction
+
+
+;; options:
+
+;;   Simplifier: No positive/negative tests
+;;   Simplifier: Use only proved local simps
+;;   Simplifier: No automatic closing test
+;;   Tree: Keep old versions of proofs
+;;   Tree: Show local simprules.
+;;   Tree: collapse symbolic execution.
+;;   Tree: Disable autozoom and resize by default.
+;;   Replay: Use extra heuristics
+;;   Replay: Use simprules of old proof only
+;;   Replay: Use simprules of old proofsteps only
+;;   Replay: Adjust types of old proof to polymorphic ones
+;;   Replay: Do not adjust with renaming
+;;   Replay some proofs: Invalidate incomplete replays
+;;   Replay some proofs: Do not save successful replays
+;;   Context: Ask if only one rule
+;;   Context: Show all rules
+;;   Context: Add abbrev command
+;;   Context: Add weakening command
+;;   Context: Add insert DL lemma
+;;   Context: Don't show info command
+;;   Context: Don't abbreviate long rewrite rules
+;;   Context: Don't show TL rules
+;;   Ruleset: Use basic rules
+;;   Ruleset: Use heap assignments
+;;   Ruleset: Use less aggressive TL assert weakening
+;;   Single User: Ignore all locks
+;;   View: Print each formula on separate line
+;;   View: Always show RGI in Rgbox/dia
+;;   View: Show Ind-Hyp
+;;   View: Pretty print html
+;;   Config: Allow only proved local lemmas
+;;   Config: Do not compute partial matches for quantifiers
+;;   Config: Don't warn about subsignature
+;;   Config: Use kodkod
+;;   Config: Use SMT solvers
+;;   Config: Check simplifier flags in files
+
+;; simplifier:
+
+;;       simp add <feature>
+;;       simp delete <feature>
+;;       forward add <feature>
+;;       forward delete <feature>
+
+configs:
+
+;;   no exit all
+;;   no work on library
+;;   ignore all errors
+;;   no functional ASM rules
+
+
