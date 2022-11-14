@@ -1,0 +1,11 @@
+rename Div by morphism
+
+asmpt → asmpt-divider;
+cmt → cmt-divider;
+q_init → q_init-divider;
+q_Dividing → q_Dividing-divider;
+q_Error → q_Error-divider;
+divI → divI-divider;
+resO → resO-divider;
+
+end rename

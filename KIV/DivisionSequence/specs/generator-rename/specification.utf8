@@ -1,0 +1,9 @@
+rename Gen by morphism
+
+asmpt → asmpt-generator;
+cmt → cmt-generator;
+q_init → q_init-generator;
+q_Generating → q_Generating-generator;
+divO → divO-generator;
+
+end rename

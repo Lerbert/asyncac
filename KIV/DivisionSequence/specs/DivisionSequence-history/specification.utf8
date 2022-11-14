@@ -1,0 +1,12 @@
+enrich DivisionSequence-history-inst with
+
+;; constants
+
+;; functions
+
+;; predicates
+
+;; axioms
+
+
+end enrich

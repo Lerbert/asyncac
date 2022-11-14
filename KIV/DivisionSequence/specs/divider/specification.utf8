@@ -1,0 +1,14 @@
+enrich divider-rename with
+
+;; constants
+
+;; functions
+
+;; predicates
+
+axioms
+	divI-divider-def: divI-divider = generator-divTOdivider-div; used for: s, ls;
+	resO-divider-def: resO-divider = divider-resEXPORT; used for: s, ls;
+
+
+end enrich

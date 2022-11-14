@@ -1,0 +1,12 @@
+generic data specification
+
+		parameter ctrl-data
+       
+Conf = conf(ctrl : Ctrl; data : Data);
+
+variables
+	c : Ctrl;
+	d : Data;
+	g : Conf;
+
+end generic data specification

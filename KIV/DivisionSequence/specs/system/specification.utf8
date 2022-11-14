@@ -1,0 +1,22 @@
+enrich divider, generator with
+
+;; constants
+
+;; functions
+
+predicates
+	asmpt : History;
+	cmt : History;
+
+
+axioms
+	asmpt-def: asmpt(h) ↔ (
+			true
+		); used for: s, ls;
+		
+	cmt-def: cmt(h) ↔ (
+			∀ i . i ∈ project(h, { send(divider-resEXPORT) }) → ¬ msg(send(divider-resEXPORT), error) ∈ i
+		); used for: s, ls;
+
+
+end enrich

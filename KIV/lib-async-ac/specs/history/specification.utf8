@@ -1,0 +1,58 @@
+enrich history-item, channel-set-list with
+
+functions
+	project : History × OpSet → History;
+	events : History → EList;
+	cnt : History × Operation → nat;
+	cOps : CSet → OpSet;
+
+predicates
+	complete : History × CSet;
+
+variables
+	c : Channel;
+	cset : CSet;
+	e : Event;
+	el : EList;
+	es : ESet;
+	i : HistoryItem;
+	h : History;
+	o : Operation;
+	ops : OpSet;
+
+partial functions
+	queue : History × Channel → EList with λ h, c . complete(h, { c });
+	final : History × Operation → ESet with λ h, o . h ≠ [];
+	butfinal : History × Operation → EList with λ h, o . h ≠ [];
+
+axioms
+	cnt-def: cnt(h, o) = # project(h, { o }); used for: s, ls;
+	
+	final-def: final(h, o) = events(project(h, { o }).head); used for: s, ls;
+	
+	butfinal-def: butfinal(h, o) = events(project(h, { o }).tail); used for: s, ls;
+
+	queue-def: queue(h, c) = restn(cnt(h, receive(c)), rev(events(project(h, { send(c) })))); used for: s, ls;
+
+	project-base: project([], ops) = []; used for: s, ls;
+	project-rec-non-empty: filterOps(i, ops) ≠ ∅ → project(i ' + h, ops) = filterOps(i, ops) + project(h, ops); used for: s, ls;
+	project-rec-empty: filterOps(i, ops) = ∅ → project(i ' + h, ops) = project(h, ops); used for: s, ls;
+	
+	events-base: events([]) = []; used for: s, ls;
+	events-rec: events(i ' + h) = events(i) + events(h); used for: s, ls;
+	
+	cOps-base: cOps(∅) = ∅; used for: s, ls;
+	cOps-rec: cOps(cset ++ c) = cOps(cset) ++ send(c) ++ receive(c); used for: s, ls;
+
+	complete-def: complete(h, cset) ↔ (
+		∀ c . c ∈ cset → (
+			(∀ i . i ∈ h → (
+				¬((∃ e . msg(send(c), e) ∈ i) ∧ (∃ e . msg(receive(c), e) ∈ i))
+			)) ∧
+			(∀ h1 . h1 ⊒ h → (
+				events(project(h1, { receive(c) })) ⊒ events(project(h1, { send(c) }))
+			))
+		)
+	); used for: s, ls;
+
+end enrich

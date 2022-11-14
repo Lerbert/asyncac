@@ -1,0 +1,15 @@
+enrich message-set-list, operation-set-list, event-set-list with
+
+functions
+	filterOps : HistoryItem × OpSet → HistoryItem;
+	events : HistoryItem → ESet;
+
+axioms
+	events-base: events(∅) = ∅; used for: s, ls;
+	events-rec: events(i ++ m) = events(i) ++ ev(m); used for: s, ls;
+
+	filterOps-base: filterOps(∅, ops) = ∅; used for: s, ls;
+	filterOps-rec-match: op(m) ∈ ops → filterOps(i ++ m, ops) = filterOps(i, ops) ++ m; used for: s, ls;
+	filterOps-rec-fail: (¬ op(m) ∈ ops) → filterOps(i ++ m, ops) = filterOps(i, ops); used for: s, ls;
+
+end enrich

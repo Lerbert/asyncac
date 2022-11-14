@@ -1,0 +1,9 @@
+rename Gen-conf-inst by morphism
+
+Conf → GenConf;
+Ctrl → GenCtrl;
+Data → GenData;
+conf → GencConf;
+Dt → GenDt;
+
+end rename

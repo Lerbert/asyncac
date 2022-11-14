@@ -1,0 +1,19 @@
+lemmas
+	cmt-init: cmt([]);
+	q_init-Generating: ((q_init(g)) ∧ (ctrl(g) = Generating) ∧ ((x = xAcc(data(g)))) ∧ (x = 1)) → (
+		q_Generating([], g)
+	);
+	1-Generating-Generating: ((h1 = (∅ ++ msg(send(divO), int(x))) + h) ∧ ((ctrl(g1) = Generating) ∧ ((x = xAcc(data(g)))) ∧ (xAcc(data(g1)) = x + 1)) ∧ (true)) → (
+		((q_Generating(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Generating(h1, g1)
+			))
+		)
+	);
+	Generating-input: ((h1 = i + h) ∧ (i ⊆ ∅) ∧ (¬ (i = ∅))) → (
+		((q_Generating(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Generating(h1, g)
+			))
+		)
+	);

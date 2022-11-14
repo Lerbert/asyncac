@@ -1,0 +1,13 @@
+enrich generator-rename with
+
+;; constants
+
+;; functions
+
+;; predicates
+
+axioms
+	divO-generator-def: divO-generator = generator-divTOdivider-div; used for: s, ls;
+
+
+end enrich

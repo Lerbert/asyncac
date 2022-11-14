@@ -1,0 +1,35 @@
+enrich Div-conf, DivisionSequence-history with
+
+constants
+	divI : Channel;
+	resO : Channel;
+
+;; functions
+
+predicates
+	asmpt : History;
+	cmt : History;
+	q_init : DivConf;
+	q_Dividing : History × DivConf;
+	q_Error : History × DivConf;
+
+axioms
+	divI-resO-disj: ¬ (divI = resO); used for: s, ls;
+	asmpt-def: (asmpt(h)) ↔ (
+		# queue(h, divI) = 0 ∨ ¬ int(0) ∈ queue(h, divI).head
+	); used for: s, ls;
+	cmt-def: (cmt(h)) ↔ (
+		∀ i . i ∈ project(h, { send(resO) }) → ¬ msg(send(resO), error) ∈ i
+	); used for: s, ls;
+	q_init-def: (q_init(g)) ↔ (
+		true
+	); used for: s, ls;
+	q_Dividing-def: (q_Dividing(h, g)) ↔ (
+		∀ i . i ∈ project(h, { send(resO) }) → ¬ msg(send(resO), error) ∈ i
+	); used for: s, ls;
+	q_Error-def: (q_Error(h, g)) ↔ (
+		false
+	); used for: s, ls;
+
+
+end enrich

@@ -1,0 +1,7 @@
+specification
+
+sorts
+	Ctrl;
+	Data;
+
+end specification

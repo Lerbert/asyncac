@@ -1,0 +1,29 @@
+enrich Gen-conf, DivisionSequence-history with
+
+constants
+	divO : Channel;
+
+;; functions
+
+predicates
+	asmpt : History;
+	cmt : History;
+	q_init : GenConf;
+	q_Generating : History × GenConf;
+
+axioms
+	asmpt-def: (asmpt(h)) ↔ (
+		true
+	); used for: s, ls;
+	cmt-def: (cmt(h)) ↔ (
+		∀ i . i ∈ project(h, { send(divO) }) → ¬ msg(send(divO), int(0)) ∈ i
+	); used for: s, ls;
+	q_init-def: (q_init(g)) ↔ (
+		true
+	); used for: s, ls;
+	q_Generating-def: (q_Generating(h, g)) ↔ (
+		xAcc(data(g)) > 0 ∧ ∀ i . i ∈ project(h, { send(divO) }) → ¬ msg(send(divO), int(0)) ∈ i
+	); used for: s, ls;
+
+
+end enrich

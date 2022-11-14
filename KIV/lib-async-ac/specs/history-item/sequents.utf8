@@ -1,0 +1,38 @@
+
+lemmas
+
+;; filterOps-size: # filterOps(i, ops) ≤ # ops; used for: s, ls; ;; geht nicht, da eine Operation mit verschiedenen events vorkommen könnte
+
+filterOps-non-empty: filterOps(i, ops) ≠ ∅ ↔ ∃ o, e . o ∈ ops ∧ msg(o, e) ∈ i;
+filterOps-in: msg(o, e) ∈ filterOps(i, ops) ↔ msg(o, e) ∈ i ∧ o ∈ ops;
+filterOps-idem: filterOps(filterOps(i, ops), ops) = filterOps(i, ops); used for: s, ls;
+filterOps-subset: filterOps(i, ops) ⊆ i; used for: ss, lss;
+filterOps-intersect: filterOps(filterOps(i, ops1), ops2) = filterOps(i, ops1 ∩ ops2); used for: s, ls;
+
+events-in: e ∈ events(i) ↔ ∃ o . msg(o, e) ∈ i; used for: s, ls;
+
+;; <name> : <sequent> ;
+;; used for : <some_flags> ; comment : <some_comment> ;
+
+;;; END
+
+;;;****************************************************************************************
+;;; This file is used to add additional theorems.
+;;; 1. Two semicolons start a line comment
+;;; 2. (: ... :) delimit a comment. They can be nested!
+;;; 3. Reading stops after ;;; END
+;;; 4. Theorems have the form
+
+<name> : <sequent> ; used for : <some_flags> ; comment : <some_comment> ;
+
+     'used for' and 'comment' are optional.
+     <some_comment> may be any text not containing a ;
+     <some_flags> is a comma separated list with information that the lemma should
+     be used as a simplifier rule or something like that. Since you can add or delete
+     simplifier rules etc. by menu commands, you can always omit 'used for' if you want.
+     Note: changing the flags or the comment only works if the sequent is changed too!!!
+     possible flags are:
+
+     s (simplifier rule), ls (local simplifier rule), f (forward), lf (local forward),
+     e (elimination), c (cut), lc (local cut)
+

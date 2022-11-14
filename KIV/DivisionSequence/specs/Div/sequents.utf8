@@ -1,0 +1,47 @@
+lemmas
+	cmt-init: cmt([]);
+	q_init-Dividing: ((q_init(g)) ∧ (ctrl(g) = Dividing) ∧ ((n = nAcc(data(g)))) ∧ (n = 42)) → (
+		q_Dividing([], g)
+	);
+	1-Dividing-Dividing: ((h1 = (∅ ++ msg(receive(divI), int(_x1))) + h) ∧ ((ctrl(g1) = Dividing) ∧ ((n = nAcc(data(g)))) ∧ (nAcc(data(g1)) = n)) ∧ (¬ ((d = 0) ∨ (d ≠ 0)))) → (
+		((q_Dividing(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ divI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Dividing(h1, g1)
+			))
+		)
+	);
+	2-Dividing-Error: ((h1 = (∅ ++ msg(send(resO), error) ++ msg(receive(divI), int(d))) + h) ∧ ((ctrl(g1) = Error) ∧ ((n = nAcc(data(g)))) ∧ (nAcc(data(g1)) = 0)) ∧ (d = 0)) → (
+		((q_Dividing(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ divI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Error(h1, g1)
+			))
+		)
+	);
+	3-Dividing-Dividing: ((h1 = (∅ ++ msg(send(resO), number(n / d)) ++ msg(receive(divI), int(d))) + h) ∧ ((ctrl(g1) = Dividing) ∧ ((n = nAcc(data(g)))) ∧ (nAcc(data(g1)) = n)) ∧ (d ≠ 0)) → (
+		((q_Dividing(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ divI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Dividing(h1, g1)
+			))
+		)
+	);
+	4-Error-Error: ((h1 = (∅ ++ msg(send(resO), error) ++ msg(receive(divI), int(d))) + h) ∧ ((ctrl(g1) = Error) ∧ ((n = nAcc(data(g)))) ∧ (nAcc(data(g1)) = n)) ∧ (true)) → (
+		((q_Error(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ divI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Error(h1, g1)
+			))
+		)
+	);
+	Dividing-input: ((h1 = i + h) ∧ (i ⊆ ∅ ++ msg(send(divI), e0)) ∧ (¬ (i = ∅))) → (
+		((q_Dividing(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ divI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Dividing(h1, g)
+			))
+		)
+	);
+	Error-input: ((h1 = i + h) ∧ (i ⊆ ∅ ++ msg(send(divI), e0)) ∧ (¬ (i = ∅))) → (
+		((q_Error(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ divI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Error(h1, g)
+			))
+		)
+	);

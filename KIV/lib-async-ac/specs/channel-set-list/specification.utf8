@@ -1,0 +1,25 @@
+enrich channel-set-list-actualize with
+
+;; sorts ;
+
+;; constants ;
+
+;; functions ;
+
+;; predicates ;
+
+;; procedures ;
+
+;; variables ;
+
+;; partial functions ;
+
+;; partial predicates ;
+
+;; induction ;
+
+;; axioms
+
+;; declarations
+
+end enrich

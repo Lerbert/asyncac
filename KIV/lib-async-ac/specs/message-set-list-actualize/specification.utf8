@@ -1,0 +1,7 @@
+actualize set-list with message by morphism
+
+elem → Message;
+list → History;
+set → HistoryItem;
+
+end actualize

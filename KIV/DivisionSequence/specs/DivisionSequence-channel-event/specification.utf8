@@ -1,0 +1,12 @@
+data specification
+	using nat-div
+
+Channel = divider-resEXPORT | generator-divTOdivider-div;
+Event = error | int(acc1 : nat) | number(acc1 : nat);
+
+variables
+	n : nat;
+	varChannel : Channel;
+	varEvent : Event;
+
+end data specification

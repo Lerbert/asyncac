@@ -1,0 +1,14 @@
+generic data specification
+	
+		parameter channel-event
+
+Operation = send(chan : Channel) | receive(chan : Channel);
+Message = msg(op : Operation; ev : Event);
+
+variables
+	e : Event;
+	c : Channel;
+	o : Operation;
+	m : Message;
+
+end generic data specification

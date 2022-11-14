@@ -1,0 +1,9 @@
+rename Div-conf-inst by morphism
+
+Conf → DivConf;
+Ctrl → DivCtrl;
+Data → DivData;
+conf → DivcConf;
+Dt → DivDt;
+
+end rename

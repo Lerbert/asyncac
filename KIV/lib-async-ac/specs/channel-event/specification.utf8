@@ -1,0 +1,7 @@
+specification
+
+sorts
+	Channel;
+	Event;
+
+end specification

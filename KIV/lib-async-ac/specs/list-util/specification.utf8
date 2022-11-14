@@ -1,0 +1,25 @@
+enrich list-del with
+
+;; sorts ;
+
+;; constants ;
+
+;; functions ;
+
+;; predicates ;
+
+;; procedures ;
+
+;; variables ;
+
+;; partial functions ;
+
+;; partial predicates ;
+
+;; induction ;
+
+;; axioms
+
+;; declarations
+
+end enrich

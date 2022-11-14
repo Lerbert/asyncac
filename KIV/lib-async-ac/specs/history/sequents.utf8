@@ -1,0 +1,83 @@
+
+lemmas
+
+final-nonempty: project(h, ∅ ++ o) ≠ [] → final(h, o) ≠ ∅;
+
+project-one-empty: filterOps(i, ops) = ∅ → project(i ', ops) = []; used for: s, ls;
+project-one-non-empty: filterOps(i, ops) ≠ ∅ → project(i ', ops) = filterOps(i, ops) '; used for: s, ls;
+project-last-rec-non-empty: filterOps(i, ops) ≠ ∅ → project(h + i ', ops) = project(h, ops) + filterOps(i, ops) '; used for: s, ls;
+project-last-rec-empty: filterOps(i, ops) = ∅ → project(h + i ', ops) = project(h, ops); used for: s, ls;
+project-append: project(h1 + h2, ops) = project(h1, ops) + project(h2, ops); used for: s, ls;
+project-in-subset: i ∈ project(h, ops) → ∃ i1 . i ⊆ i1 ∧ i1 ∈ h;
+project-in-ops: m ∈ i ∧ i ∈ project(h, ops) → op(m) ∈ ops; used for: s, ls;
+project-in: i ∈ project(h, ops) → ∃ i1 . i1 ∈ h ∧ i = filterOps(i1, ops);
+project-in-2: i ∈ project(h, ops) ↔ ∃ i1 . i1 ∈ h ∧ i = filterOps(i1, ops) ∧ i ≠ ∅;
+project-idem: project(project(h, ops), ops) = project(h, ops); used for: s, ls;
+project-eq: project(h, ops) = h1 → project(h, ops) = project(h1, ops);
+project-eq-first: project(h, ops) = i1 ' + h1 → project(h, ops) = i1 ' + project(h1, ops);
+project-eq-first-lastn: n ≤ # project(h, ops) ⊦ lastn(n, project(h, ops)) = i1 ' + h1 → lastn(n, project(h, ops)) = i1 ' + project(h1, ops);
+
+project-suffix: h1 ⊒ h → project(h1, ops) ⊒ project(h, ops);
+project-ex-suffix: h1 ⊒ project(h, ops) → ∃ h2 . h2 ⊒ h ∧ project(h2, ops) = h1;
+
+project-intersect: project(project(h, ops1), ops2) = project(h, ops1 ∩ ops2); used for: s, ls;
+
+events-one: events(i ') = events(i) '; used for: s, ls;
+events-last-rec: events(h + i ') = events(h) + events(i) '; used for: s, ls;
+events-length: # events(h) = # h; used for: s, ls;
+events-postfix: h1 ⊒ h → events(h1) ⊒ events(h); 
+events-has-message-in-history: e ∈ es ∧ es ∈ events(h) → ∃ o, i . msg(o, e) ∈ i ∧ i ∈ h;
+events-has-item-in-history: es ∈ events(h) ↔ ∃ i . i ∈ h ∧ events(i) = es;
+events-empty: events(h) = [] ↔ h = []; used for: s, ls;
+events-last-is-last-history: h ≠ [] → events(h).last = events(h.last);
+
+cOps-in: ∅ ++ send(c) ++ receive(c) ⊆ cOps(cset) ↔ c ∈ cset; used for: s, ls;
+cOps-send: send(c) ∈ cOps(cset) ↔ c ∈ cset; used for: s, ls;
+cOps-receive: receive(c) ∈ cOps(cset) ↔ c ∈ cset; used for: s, ls;
+
+queue-is-suffix-of-sends: complete(h, ∅ ++ c) → queue(h, c) ⊒ rev(events(project(h, ∅ ++ send(c))));
+queue-head-is-next-receive: complete(i ' + h, ∅ ++ c) → ∀ e . (msg(receive(c), e) ∈ i → queue(h, c) ≠ [] ∧ e ∈ queue(h, c).head);
+receive-is-prefix-of-queue: complete(h1 + h, ∅ ++ c) ∧ project(h1, ∅ ++ send(c)) = [] → rev(events(project(h1, ∅ ++ receive(c)))) ⊑ queue(h, c);
+
+restn-in: n ≤ # el ∧ x ∈ restn(n, el) → x ∈ el; used for: s, ls;
+events-has-properties-of-history: (∀ i . i ∈ h → ∀ o, e . guard(e) ∧ msg(o, e) ∈ i → p(e)) → ∀ es . es ∈ events(h) → ∀ e . guard(e) ∧ e ∈ es → p(e);
+queue-has-poperties-of-sends: (∀ i . i ∈ h → ∀ e . guard(e) ∧ msg(send(c), e) ∈ i → p(e)) ∧ complete(h, { c }) → ∀ es . es ∈ queue(h, c) → ∀ e . guard(e) ∧ e ∈ es → p(e);
+receives-have-properties-of-sends: (∀ i . i ∈ h → ∀ e . guard(e) ∧ msg(send(c), e) ∈ i → p(e)) ∧ complete(h, { c }) → ∀ i . i ∈ h → ∀ e . guard(e) ∧ msg(receive(c), e) ∈ i → p(e);
+
+complete-subset: cset1 ⊆ cset ∧ complete(h, cset) → complete(h, cset1); used for: f, lf;
+complete-project: cOps(cset) ⊆ ops → (complete(project(h, ops), cset) ↔ complete(h, cset));
+complete-suffix: complete(h, cset) → ∀ t . t ⊒ h → complete(t, cset);
+complete-cnt: complete(h, cset) → ∀ c . c ∈ cset → cnt(h, send(c)) ≥ cnt(h, receive(c));
+
+receive-has-send: complete(i ' + h, ∅ ++ c) ∧ msg(receive(c), e) ∈ i → ∃ i1 . i1 ∈ h ∧ msg(send(c), e) ∈ i1;
+receives-have-sends: complete(i ' + h, ∅ ++ c) ∧ filterOps(i, ∅ ++ receive(c)) ≠ ∅ → ∃ i1 . i1 ∈ h ∧ events(filterOps(i1, ∅ ++ send(c))) = events(filterOps(i, ∅ ++ receive(c)));
+
+queue-project: send(c) ∈ ops ∧ receive(c) ∈ ops → queue(project(h, ops), c) = queue(h, c); 
+
+;; final-singleton: project(h, { o }) ≠ [] ⊦ # final(h, o) = 1; ;; geht nicht, da eine Operation mit verschiedenen events vorkommen könnte
+
+;; <name> : <sequent> ;
+;; used for : <some_flags> ; comment : <some_comment> ;
+
+;;; END
+
+;;;****************************************************************************************
+;;; This file is used to add additional theorems.
+;;; 1. Two semicolons start a line comment
+;;; 2. (: ... :) delimit a comment. They can be nested!
+;;; 3. Reading stops after ;;; END
+;;; 4. Theorems have the form
+
+<name> : <sequent> ; used for : <some_flags> ; comment : <some_comment> ;
+
+     'used for' and 'comment' are optional.
+     <some_comment> may be any text not containing a ;
+     <some_flags> is a comma separated list with information that the lemma should
+     be used as a simplifier rule or something like that. Since you can add or delete
+     simplifier rules etc. by menu commands, you can always omit 'used for' if you want.
+     Note: changing the flags or the comment only works if the sequent is changed too!!!
+     possible flags are:
+
+     s (simplifier rule), ls (local simplifier rule), f (forward), lf (local forward),
+     e (elimination), c (cut), lc (local cut)
+

@@ -1,0 +1,3 @@
+instantiate parameter channel-event < history with DivisionSequence-channel-event by mapping
+
+end instantiate

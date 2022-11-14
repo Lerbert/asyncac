@@ -1,0 +1,12 @@
+data specification
+	using nat-div
+
+Ctrl = Dividing | Error;
+Data = Dt(nAcc : nat);
+
+variables
+	n : nat;
+	varCtrl : Ctrl;
+	varData : Data;
+
+end data specification
