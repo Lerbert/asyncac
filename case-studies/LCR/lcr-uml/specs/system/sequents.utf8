@@ -1,0 +1,44 @@
+
+lemmas
+
+par-p1-p4-cmt-lcr1-asmpt-lcr4: cmt-lcr1(h) ∧ asmpt-lcr14(h) ∧ complete(h, { prevI-lcr4 }) → asmpt-lcr4(h);
+par-p1-p4-cmt-lcr4-asmpt-lcr1: cmt-lcr4(h) ∧ asmpt-lcr14(h) ∧ complete(h, { prevI-lcr1 }) → asmpt-lcr1(h);
+
+par-p14-p3-cmt-lcr14-asmpt-lcr3: cmt-lcr14(h) ∧ asmpt-lcr134(h) ∧ complete(h, { prevI-lcr3 }) → asmpt-lcr3(h);
+par-p14-p3-cmt-lcr4-asmpt-lcr14: cmt-lcr3(h) ∧ asmpt-lcr134(h) ∧ complete(h, { prevI-lcr4 }) → asmpt-lcr14(h);
+
+par-p134-p2-cmt-lcr134-asmpt-lcr2: cmt-lcr134(h) ∧ asmpt-lcr1234(h) ∧ complete(h, { prevI-lcr2 }) → asmpt-lcr2(h);
+par-p134-p2-cmt-lcr2-asmpt-lcr134: cmt-lcr2(h) ∧ asmpt-lcr1234(h) ∧ complete(h, { prevI-lcr4 }) → asmpt-lcr134(h);
+
+cmt-lcr1234-safe: cmt-lcr1234(h) → safe(h);
+
+;; support lemmas
+
+queue-prop: (∀ i. i ∈ h → (∀ e. msg(send(c), e) ∈ i → e = vote(pid))) ∧ complete(h, {c} ) → (∀ es. es ∈ queue(h, c) → (∀ e. e ∈ es → e = vote(pid)));
+queue-prop2: (∀ i. i ∈ h → (∀ e. msg(send(c), e) ∈ i → ∃ n . e = vote(n) ∧ ((n = myId) ∨ (n ∈ inIds ∧ n > myId)))) ∧ complete(h, {c} ) → (∀ es. es ∈ queue(h, c) → (∀ e. e ∈ es → ∃ n . e = vote(n) ∧ ((n = myId) ∨ (n ∈ inIds ∧ n > myId))));
+
+;; <name> : <sequent> ;
+;; used for : <some_flags> ; comment : <some_comment> ;
+
+;;; END
+
+;;;****************************************************************************************
+;;; This file is used to add additional theorems.
+;;; 1. Two semicolons start a line comment
+;;; 2. (: ... :) delimit a comment. They can be nested!
+;;; 3. Reading stops after ;;; END
+;;; 4. Theorems have the form
+
+<name> : <sequent> ; used for : <some_flags> ; comment : <some_comment> ;
+
+     'used for' and 'comment' are optional.
+     <some_comment> may be any text not containing a ;
+     <some_flags> is a comma separated list with information that the lemma should
+     be used as a simplifier rule or something like that. Since you can add or delete
+     simplifier rules etc. by menu commands, you can always omit 'used for' if you want.
+     Note: changing the flags or the comment only works if the sequent is changed too!!!
+     possible flags are:
+
+     s (simplifier rule), ls (local simplifier rule), f (forward), lf (local forward),
+     e (elimination), c (cut), lc (local cut)
+

@@ -1,0 +1,12 @@
+data specification
+	using nat
+
+Channel = lcr1-leaderEXPORT | lcr1-nextTOlcr3-prev | lcr2-leaderEXPORT | lcr2-nextTOlcr4-prev | lcr3-leaderEXPORT | lcr3-nextTOlcr2-prev | lcr4-leaderEXPORT | lcr4-nextTOlcr1-prev;
+Event = elected(acc1 : nat) | vote(acc1 : nat);
+
+variables
+	n : nat;
+	varChannel : Channel;
+	varEvent : Event;
+
+end data specification

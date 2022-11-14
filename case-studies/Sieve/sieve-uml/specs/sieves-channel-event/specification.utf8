@@ -1,0 +1,12 @@
+data specification
+	using nat
+
+Channel = generator-sieveTOsieve1-prev | sieve1-nextTOsieve2-prev | sieve2-nextTOsieve3-prev | sieve3-nextEXPORT;
+Event = number(acc1 : nat);
+
+variables
+	n : nat;
+	varChannel : Channel;
+	varEvent : Event;
+
+end data specification

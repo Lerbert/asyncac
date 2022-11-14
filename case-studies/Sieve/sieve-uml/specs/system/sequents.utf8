@@ -1,0 +1,65 @@
+
+lemmas
+
+;; We can assume completeness for the input channels of the given commitments due to the admissible completeness rule
+
+cmt: cmt-sieve1(h) ∧ cmt-sieve2(h) ∧ cmt-sieve3(h) ∧ cmt-generator(h) ∧ complete(h, ∅ ++ generator-sieveTOsieve1-prev ++ sieve1-nextTOsieve2-prev ++ sieve2-nextTOsieve3-prev) → cmt(h);
+
+;; stage one generator || sieve1 --> new asmpt = true, new cmt = cmt-generator + cmt-sieve1 + complete(generator-sieveTOsieve1-prev)
+asmpt-generator: asmpt(h) ∧ cmt-sieve1(h) ∧ complete(h, ∅) → asmpt-generator(h);
+asmpt-sieve1:    asmpt(h) ∧ cmt-generator(h) ∧ complete(h, ∅ ++ generator-sieveTOsieve1-prev) → asmpt-sieve1(h);
+;; stage two (generator || sieve1) || sieve2 --> new asmpt = true, new cmt = cmt-generator + cmt-sieve1 + cmt-sieve2 + complete(generator-sieveTOsieve1-prev, sieve1-nextTOsieve2-prev)
+asmpt-sieve2:    asmpt(h) ∧ cmt-generator(h) ∧ cmt-sieve1(h) ∧ complete(h, ∅ ++ generator-sieveTOsieve1-prev ++ sieve1-nextTOsieve2-prev) → asmpt-sieve2(h);
+;; don't need to show asmpt, since it is just "true"
+;; stage three ((generator || sieve1) || sieve2) || sieve3 --> new asmpt = true, new cmt = cmt-generator + cmt-sieve1 + cmt-sieve2 + cmt-sieve3 + complete(generator-sieveTOsieve1-prev, sieve1-nextTOsieve2-prev, sieve2-nextTOsieve3-prev)
+asmpt-sieve3:    asmpt(h) ∧ cmt-generator(h) ∧ cmt-sieve1(h) ∧ cmt-sieve2(h) ∧ complete(h, ∅ ++ generator-sieveTOsieve1-prev ++ sieve1-nextTOsieve2-prev ++ sieve2-nextTOsieve3-prev) → asmpt-sieve3(h);
+;; again: don't need to show asmpt, since it is just "true"
+
+
+;; support lemmas
+
+div-2: cmt-sieve1(h) ∧ complete(h, ∅ ++ generator-sieveTOsieve1-prev) → events(project(h, ∅ ++ send(sieve1-nextTOsieve2-prev))) ⊒ filterNotDiv(events(project(h, ∅ ++ send(generator-sieveTOsieve1-prev))), ∅ ++ 2);
+div-3: cmt-sieve1(h) ∧ cmt-sieve2(h) ∧ complete(h, ∅ ++ generator-sieveTOsieve1-prev ++ sieve1-nextTOsieve2-prev) → events(project(h, ∅ ++ send(sieve2-nextTOsieve3-prev))) ⊒ filterNotDiv(events(project(h, ∅ ++ send(generator-sieveTOsieve1-prev))), ∅ ++ 2 ++ 3);
+div-5: cmt-sieve1(h) ∧ cmt-sieve2(h) ∧ cmt-sieve3(h) ∧ complete(h, ∅ ++ generator-sieveTOsieve1-prev ++ sieve1-nextTOsieve2-prev ++ sieve2-nextTOsieve3-prev) → events(project(h, ∅ ++ send(sieve3-nextEXPORT))) ⊒ filterNotDiv(events(project(h, ∅ ++ send(generator-sieveTOsieve1-prev))), ∅ ++ 2 ++ 3 ++ 5);
+
+help-lastn-postfix: n ≤ # h : History ⊦ lastn(n, h) = a0 ' + h0 ∧ h1 ⊒ h0 → h1 ⊒ h; used for: s, ls;
+
+gen-empty-2:     cmt-generator(h) → (filterNotDiv(events(project(h, ∅ ++ send(generator-sieveTOsieve1-prev))), ∅ ++ 2) = []           ↔ # project(h, ∅ ++ send(generator-sieveTOsieve1-prev)) < 2);
+gen-empty-2-3:   cmt-generator(h) → (filterNotDiv(events(project(h, ∅ ++ send(generator-sieveTOsieve1-prev))), ∅ ++ 2 ++ 3) = []      ↔ # project(h, ∅ ++ send(generator-sieveTOsieve1-prev)) < 4);
+gen-empty-2-3-5: cmt-generator(h) → (filterNotDiv(events(project(h, ∅ ++ send(generator-sieveTOsieve1-prev))), ∅ ++ 2 ++ 3 ++ 5) = [] ↔ # project(h, ∅ ++ send(generator-sieveTOsieve1-prev)) < 6);
+
+first-sieve1: cmt-generator(h)                                                                                                                                                          → (cnt(h, send(generator-sieveTOsieve1-prev)) > 0 → ∀ e . e ∈ first(h, send(generator-sieveTOsieve1-prev)) → acc1(e) = 2);
+first-sieve2: cmt-generator(h) ∧ cmt-sieve1(h) ∧                                 complete(h, ∅ ++ generator-sieveTOsieve1-prev)                                                         → (cnt(h, send(sieve1-nextTOsieve2-prev))     > 0 → ∀ e . e ∈ first(h, send(sieve1-nextTOsieve2-prev))     → acc1(e) = 3);
+first-sieve3: cmt-generator(h) ∧ cmt-sieve1(h) ∧ cmt-sieve2(h) ∧                 complete(h, ∅ ++ generator-sieveTOsieve1-prev ++ sieve1-nextTOsieve2-prev)                             → (cnt(h, send(sieve2-nextTOsieve3-prev))     > 0 → ∀ e . e ∈ first(h, send(sieve2-nextTOsieve3-prev))     → acc1(e) = 5);
+first-sieve4: cmt-generator(h) ∧ cmt-sieve1(h) ∧ cmt-sieve2(h) ∧ cmt-sieve3(h) ∧ complete(h, ∅ ++ generator-sieveTOsieve1-prev ++ sieve1-nextTOsieve2-prev ++ sieve2-nextTOsieve3-prev) → (cnt(h, send(sieve3-nextEXPORT))            > 0 → ∀ e . e ∈ first(h, send(sieve3-nextEXPORT))            → acc1(e) = 7);
+
+not-div-sieve4: cmt-sieve1(h) ∧ cmt-sieve2(h) ∧ cmt-sieve3(h) ∧ complete(h, ∅ ++ generator-sieveTOsieve1-prev ++ sieve1-nextTOsieve2-prev ++ sieve2-nextTOsieve3-prev) ∧ cnt(h, send(sieve3-nextEXPORT)) > 0 → ∀ e . e ∈ final(h, send(sieve3-nextEXPORT)) → ¬ 2 | acc1(e) ∧ ¬ 3 | acc1(e) ∧ ¬ 5 | acc1(e);
+
+five-prime: prime(5); used for: s, ls;
+seven-prime: prime(7); used for: s, ls;
+
+;; <name> : <sequent> ;
+;; used for : <some_flags> ; comment : <some_comment> ;
+
+;;; END
+
+;;;****************************************************************************************
+;;; This file is used to add additional theorems.
+;;; 1. Two semicolons start a line comment
+;;; 2. (: ... :) delimit a comment. They can be nested!
+;;; 3. Reading stops after ;;; END
+;;; 4. Theorems have the form
+
+<name> : <sequent> ; used for : <some_flags> ; comment : <some_comment> ;
+
+     'used for' and 'comment' are optional.
+     <some_comment> may be any text not containing a ;
+     <some_flags> is a comma separated list with information that the lemma should
+     be used as a simplifier rule or something like that. Since you can add or delete
+     simplifier rules etc. by menu commands, you can always omit 'used for' if you want.
+     Note: changing the flags or the comment only works if the sequent is changed too!!!
+     possible flags are:
+
+     s (simplifier rule), ls (local simplifier rule), f (forward), lf (local forward),
+     e (elimination), c (cut), lc (local cut)
+

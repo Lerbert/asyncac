@@ -1,0 +1,51 @@
+enrich sieves-history-inst, nat-set with
+
+;; sorts ;
+
+;; constants ;
+
+functions
+	filterNotDiv : EList × NatSet → EList;
+	filterNotDiv : ESet × NatSet → ESet;
+	
+	filterDiv : EList × NatSet → EList;
+	filterDiv : ESet × NatSet → ESet;
+
+;; predicates ;
+
+;; procedures ;
+
+variables
+	es : ESet;
+	el : EList;
+	ns : NatSet;
+
+partial functions
+	first : History × Operation → ESet with λ h, o . h ≠ [];
+
+;; partial predicates ;
+
+;; induction ;
+
+axioms
+	first-def: first(h, o) = events(project(h, { o }).last); used for: s, ls;
+	
+	filterNotDiv-list-base: filterNotDiv([], ns) = []; used for: s, ls;
+	filterNotDiv-list-rec-empty: filterNotDiv(es, ns) = ∅ → filterNotDiv(es ' + el, ns) = filterNotDiv(el, ns); used for: s, ls;
+	filterNotDiv-list-rec-non-empty: filterNotDiv(es, ns) ≠ ∅ → filterNotDiv(es ' + el, ns) = filterNotDiv(es, ns) + filterNotDiv(el, ns); used for: s, ls;
+	
+	filterNotDiv-set-base: filterNotDiv(∅, ns) = ∅; used for: s, ls;
+	filterNotDiv-set-rec-fail: (∃ n . n ∈ ns ∧ n | acc1(e)) → filterNotDiv(es ++ e, ns) = filterNotDiv(es, ns);
+	filterNotDiv-set-rec-match: ¬ (∃ n . n ∈ ns ∧ n | acc1(e)) → filterNotDiv(es ++ e, ns) = filterNotDiv(es, ns) ++ e;
+	
+	filterDiv-list-base: filterDiv([], ns) = []; used for: s, ls;
+	filterDiv-list-rec-empty: filterDiv(es, ns) = ∅ → filterDiv(es ' + el, ns) = filterDiv(el, ns); used for: s, ls;
+	filterDiv-list-rec-non-empty: filterDiv(es, ns) ≠ ∅ → filterDiv(es ' + el, ns) = filterDiv(es, ns) + filterDiv(el, ns); used for: s, ls;
+	
+	filterDiv-set-base: filterDiv(∅, ns) = ∅; used for: s, ls;
+	filterDiv-set-rec-fail: ¬ (∃ n . n ∈ ns ∧ n | acc1(e)) → filterDiv(es ++ e, ns) = filterDiv(es, ns);
+	filterDiv-set-rec-match: (∃ n . n ∈ ns ∧ n | acc1(e)) → filterDiv(es ++ e, ns) = filterDiv(es, ns) ++ e;
+
+;; declarations
+
+end enrich

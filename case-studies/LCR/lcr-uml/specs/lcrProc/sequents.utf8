@@ -1,0 +1,68 @@
+lemmas
+	cmt-init: cmt([]);
+	q_init-Start: ((q_init(g)) ∧ (ctrl(g) = Start) ∧ ((pid = pidAcc(data(g)))) ∧ (true)) → (
+		q_Start([], g)
+	);
+	1-Done-Done: ((h1 = (∅ ++ msg(receive(prevI), vote(_x1))) + h) ∧ ((ctrl(g1) = Done) ∧ ((pid = pidAcc(data(g)))) ∧ (pidAcc(data(g1)) = pid)) ∧ (true)) → (
+		((q_Done(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Done(h1, g1)
+			))
+		)
+	);
+	2-Run-Run: ((h1 = (∅ ++ msg(receive(prevI), vote(_x1))) + h) ∧ ((ctrl(g1) = Run) ∧ ((pid = pidAcc(data(g)))) ∧ (pidAcc(data(g1)) = pid)) ∧ (¬ ((rPid < pid) ∨ (rPid = pid) ∨ (rPid > pid)))) → (
+		((q_Run(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Run(h1, g1)
+			))
+		)
+	);
+	3-Run-Run: ((h1 = (∅ ++ msg(receive(prevI), vote(rPid))) + h) ∧ ((ctrl(g1) = Run) ∧ ((pid = pidAcc(data(g)))) ∧ (pidAcc(data(g1)) = pid)) ∧ (rPid < pid)) → (
+		((q_Run(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Run(h1, g1)
+			))
+		)
+	);
+	4-Run-Done: ((h1 = (∅ ++ msg(send(leaderO), elected(pid)) ++ msg(receive(prevI), vote(rPid))) + h) ∧ ((ctrl(g1) = Done) ∧ ((pid = pidAcc(data(g)))) ∧ (pidAcc(data(g1)) = pid)) ∧ (rPid = pid)) → (
+		((q_Run(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Done(h1, g1)
+			))
+		)
+	);
+	5-Run-Run: ((h1 = (∅ ++ msg(send(nextO), vote(rPid)) ++ msg(receive(prevI), vote(rPid))) + h) ∧ ((ctrl(g1) = Run) ∧ ((pid = pidAcc(data(g)))) ∧ (pidAcc(data(g1)) = pid)) ∧ (rPid > pid)) → (
+		((q_Run(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Run(h1, g1)
+			))
+		)
+	);
+	6-Start-Run: ((h1 = (∅ ++ msg(send(nextO), vote(pid))) + h) ∧ ((ctrl(g1) = Run) ∧ ((pid = pidAcc(data(g)))) ∧ (pidAcc(data(g1)) = pid)) ∧ (true)) → (
+		((q_Start(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Run(h1, g1)
+			))
+		)
+	);
+	Done-input: ((h1 = i + h) ∧ (i ⊆ ∅ ++ msg(send(prevI), e0)) ∧ (¬ (i = ∅))) → (
+		((q_Done(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Done(h1, g)
+			))
+		)
+	);
+	Run-input: ((h1 = i + h) ∧ (i ⊆ ∅ ++ msg(send(prevI), e0)) ∧ (¬ (i = ∅))) → (
+		((q_Run(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Run(h1, g)
+			))
+		)
+	);
+	Start-input: ((h1 = i + h) ∧ (i ⊆ ∅ ++ msg(send(prevI), e0)) ∧ (¬ (i = ∅))) → (
+		((q_Start(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Start(h1, g)
+			))
+		)
+	);

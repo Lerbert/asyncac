@@ -1,0 +1,16 @@
+rename lcrProcMax by morphism
+
+asmpt → asmpt-lcr4;
+cmt → cmt-lcr4;
+q_init → q_init-lcr4;
+q_Done → q_Done-lcr4;
+q_Run → q_Run-lcr4;
+q_Start → q_Start-lcr4;
+leaderO → leaderO-lcr4;
+nextO → nextO-lcr4;
+prevI → prevI-lcr4;
+
+myId → myId-lcr4;
+inIds → inIds-lcr4;
+
+end rename

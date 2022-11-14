@@ -1,0 +1,57 @@
+
+lemmas
+
+filterNotDiv-postfix: el1 ⊒ el → filterNotDiv(el1, ns) ⊒ filterNotDiv(el, ns);
+filterNotDiv-union: filterNotDiv(filterNotDiv(el, ns1), ns2) = filterNotDiv(el, ns1 ∪ ns2); used for: s, ls;
+filterNotDiv-union2: filterNotDiv(el, ns1 ∪ ns2) ≠ [] → filterNotDiv(el, ns1) ≠ [];
+filterNotDiv-in: es ∈ filterNotDiv(el, ns) → ∀ e . e ∈ es → ∀ n . n ∈ ns → ¬ n | acc1(e);
+
+filterNotDiv-list-one-empty: filterNotDiv(es, ns) = ∅ → filterNotDiv(es ', ns) = []; used for: s, ls;
+filterNotDiv-list-one-non-empty: filterNotDiv(es, ns) ≠ ∅ → filterNotDiv(es ', ns) = filterNotDiv(es, ns) '; used for: s, ls;
+filterNotDiv-list-middle-empty: filterNotDiv(es, ns) = ∅ → filterNotDiv(el1 + es ' + el, ns) = filterNotDiv(el1, ns) + filterNotDiv(el, ns); used for: s, ls;
+filterNotDiv-list-middle-non-empty: filterNotDiv(es, ns) ≠ ∅ → filterNotDiv(el1 + es ' + el, ns) = filterNotDiv(el1, ns) + filterNotDiv(es, ns) ' + filterNotDiv(el, ns); used for: s, ls;
+
+filterNotDiv-trans-send: events(project(h, ∅ ++ send(c3))) ⊒ filterNotDiv(events(project(h, ∅ ++ receive(c2))), ns2) ∧ events(project(h, ∅ ++ send(c2))) ⊒ filterNotDiv(events(project(h, ∅ ++ receive(c1))), ns1) ∧ complete(h, ∅ ++ c1 ++ c2)
+	→ events(project(h, ∅ ++ send(c3))) ⊒ filterNotDiv(events(project(h, ∅ ++ send(c1))), ns1 ∪ ns2);
+filterNotDiv-trans-receive: events(project(h, ∅ ++ send(c3))) ⊒ filterNotDiv(events(project(h, ∅ ++ receive(c2))), ns2) ∧ events(project(h, ∅ ++ send(c2))) ⊒ filterNotDiv(events(project(h, ∅ ++ receive(c1))), ns1) ∧ complete(h, ∅ ++ c1 ++ c2)
+	→ events(project(h, ∅ ++ send(c3))) ⊒ filterNotDiv(events(project(h, ∅ ++ receive(c1))), ns1 ∪ ns2);
+filterNotDiv-preserve-x: (∀ m . m ∈ i → acc1(ev(m)) = x) ∧ (∀ n . n ∈ ns → ¬ n | x) → ∀ e . e ∈ filterNotDiv(events(i), ns) → acc1(e) = x;
+filterNotDiv-kill-x: (∀ m . m ∈ i → acc1(ev(m)) = x) ∧ (∃ n . n ∈ ns ∧ n | x) → filterNotDiv(events(i), ns) = ∅;
+filterNotDiv-preserve-x-non-empty: (∀ m . m ∈ i → acc1(ev(m)) = x) ∧ (∀ n . n ∈ ns → ¬ n | x) ∧ i ≠ ∅ → filterNotDiv(events(i), ns) ≠ ∅;
+
+
+filterNotDiv-set-union: filterNotDiv(filterNotDiv(es, ns1), ns2) = filterNotDiv(es, ns1 ∪ ns2); used for: s, ls;
+filterNotDiv-set-union2: filterNotDiv(es, ns1 ∪ ns2) ≠ ∅ → filterNotDiv(es, ns1) ≠ ∅;
+filterNotDiv-set-in: e ∈ filterNotDiv(es, ns) ↔ e ∈ es ∧ ∀ n . n ∈ ns → ¬ n | acc1(e); 
+
+events-last: h ≠ [] ∧ msg(o, e) ∈ h.last → e ∈ events(h).last;
+
+postfix-tells-last: h ≠ [] ⊦ msg(o, e) ∈ h.last ∧ events(h) ⊒ el ∧ es ' ⊒ el → e ∈ es;
+
+first-nonempty: project(h, ∅ ++ o) ≠ [] → first(h, o) ≠ ∅;
+
+;; <name> : <sequent> ;
+;; used for : <some_flags> ; comment : <some_comment> ;
+
+;;; END
+
+;;;****************************************************************************************
+;;; This file is used to add additional theorems.
+;;; 1. Two semicolons start a line comment
+;;; 2. (: ... :) delimit a comment. They can be nested!
+;;; 3. Reading stops after ;;; END
+;;; 4. Theorems have the form
+
+<name> : <sequent> ; used for : <some_flags> ; comment : <some_comment> ;
+
+     'used for' and 'comment' are optional.
+     <some_comment> may be any text not containing a ;
+     <some_flags> is a comma separated list with information that the lemma should
+     be used as a simplifier rule or something like that. Since you can add or delete
+     simplifier rules etc. by menu commands, you can always omit 'used for' if you want.
+     Note: changing the flags or the comment only works if the sequent is changed too!!!
+     possible flags are:
+
+     s (simplifier rule), ls (local simplifier rule), f (forward), lf (local forward),
+     e (elimination), c (cut), lc (local cut)
+

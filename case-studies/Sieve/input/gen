@@ -1,0 +1,17 @@
+machine
+  name Gen;
+  acp [ true
+    : ∀ t . t ⊒ project(h, { send(sieveO) }) ∧ # t ≠ 0 → t.head ≠ ∅ ∧ ∀ m . m ∈ t.head → acc1(ev(m)) = # t + 1 ]
+    : [ true ];
+
+  vars x;
+
+  outputs sieve.number(val);
+
+  states
+    Generate : [ cmt(h) ∧ xAcc(data(g)) = # project(h, { send(sieveO) }) + 2 ];
+
+  init Generate : [ x = 2 ];
+
+  trans Generate --> Generate : / { sieve.number(x); x := x + 1 };
+end machine

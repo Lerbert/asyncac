@@ -1,0 +1,36 @@
+enrich Sieve-conf, sieves-history with
+
+constants
+	nextO : Channel;
+	prevI : Channel;
+	myPrime : nat;
+
+;; functions
+
+predicates
+	asmpt : History;
+	cmt : History;
+	q_init : SieveConf;
+	q_Forward : History × SieveConf;
+	q_GetPrime : History × SieveConf;
+
+axioms
+	nextO-prevI-disj: ¬ (nextO = prevI); used for: s, ls;
+	asmpt-def: (asmpt(h)) ↔ (
+		cnt(h, send(prevI)) > 0 → ∀ e . e ∈ first(h, send(prevI)) → acc1(e) = myPrime
+	); used for: s, ls;
+	cmt-def: (cmt(h)) ↔ (
+		events(project(h, { send(nextO) })) = filterNotDiv(events(project(h, { receive(prevI) })), { myPrime }) ∧ (cnt(h, send(nextO)) < cnt(h, receive(prevI)) ∨ (cnt(h, send(nextO)) = 0 ∧ cnt(h, receive(prevI)) = 0))
+	); used for: s, ls;
+	q_init-def: (q_init(g)) ↔ (
+		true
+	); used for: s, ls;
+	q_Forward-def: (q_Forward(h, g)) ↔ (
+		events(project(h, { send(nextO) })) = filterNotDiv(events(project(h, { receive(prevI) })), { myPrime }) ∧ cnt(h, send(nextO)) < cnt(h, receive(prevI)) ∧ pAcc(data(g)) = myPrime
+	); used for: s, ls;
+	q_GetPrime-def: (q_GetPrime(h, g)) ↔ (
+		cnt(h, send(nextO)) = 0 ∧ cnt(h, receive(prevI)) = 0
+	); used for: s, ls;
+
+
+end enrich

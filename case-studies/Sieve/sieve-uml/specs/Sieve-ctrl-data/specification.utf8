@@ -1,0 +1,12 @@
+data specification
+	using nat
+
+Ctrl = Forward | GetPrime;
+Data = Dt(pAcc : nat);
+
+variables
+	n : nat;
+	varCtrl : Ctrl;
+	varData : Data;
+
+end data specification

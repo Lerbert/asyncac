@@ -1,0 +1,26 @@
+machine
+  name lcrProc;
+  acp [ # queue(h, prevI) = 0 ∨ queue(h, prevI).head ⊆ vote(inIds)
+    : cnt(h, send(leaderO)) = 0 ∧ ∀ i . i ∈ h → ∀ e . msg(send(nextO), e) ∈ i → ∃ n . e = vote(n) ∧ ((n = myId) ∨ (n ∈ inIds ∧ n > myId)) ]
+    : [ pidAcc(data(g)) = myId ];
+
+  vars pid;
+
+  inputs prev.vote(val);
+
+  outputs
+    next.vote(val),
+    leader.elected(val);
+
+  states
+    Start : [ cmt(h) ∧ pidAcc(data(g)) = myId ],
+    Run : [ cmt(h) ∧ pidAcc(data(g)) = myId ],
+    Done : [ false ];
+
+  init Start;
+
+  trans Start --> Run : / { next.vote(pid) };
+  trans Run --> Run : prev.vote(rPid) [ rPid < pid ];
+  trans Run --> Run : prev.vote(rPid) [ rPid > pid ] / { next.vote(rPid) };
+  trans Run --> Done : prev.vote(rPid) [ rPid = pid ] / { leader.elected(pid) };
+end machine

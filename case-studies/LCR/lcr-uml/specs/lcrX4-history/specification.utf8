@@ -1,0 +1,14 @@
+enrich lcrX4-history-inst, nat-set with
+
+;; constants
+
+functions
+	vote : NatSet → ESet;
+
+;; predicates
+
+axioms
+	vote-base: vote(∅) = ∅; used for: s, ls;
+	vote-rec: vote(nats ++ n) = vote(nats) ++ vote(n); used for: s, ls;
+
+end enrich

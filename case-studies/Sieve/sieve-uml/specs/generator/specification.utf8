@@ -1,0 +1,13 @@
+enrich generator-rename with
+
+;; constants
+
+;; functions
+
+;; predicates
+
+axioms
+	sieveO-generator-def: sieveO-generator = generator-sieveTOsieve1-prev; used for: s, ls;
+
+
+end enrich

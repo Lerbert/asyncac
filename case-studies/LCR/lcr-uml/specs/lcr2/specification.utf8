@@ -1,0 +1,18 @@
+enrich lcr2-rename with
+
+;; constants
+
+;; functions
+
+;; predicates
+
+axioms
+	leaderO-lcr2-def: leaderO-lcr2 = lcr2-leaderEXPORT; used for: s, ls;
+	nextO-lcr2-def: nextO-lcr2 = lcr2-nextTOlcr4-prev; used for: s, ls;
+	prevI-lcr2-def: prevI-lcr2 = lcr3-nextTOlcr2-prev; used for: s, ls;
+	
+	myId-lcr2-def: myId-lcr2 = 2; used for: s, ls;
+	inIds-lcr2-edf: inIds-lcr2 = ∅ ++ 3 ++ 4; used for: s, ls;
+
+
+end enrich

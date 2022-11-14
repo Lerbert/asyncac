@@ -1,0 +1,35 @@
+enrich lcr1, lcr2, lcr3, lcr4 with
+
+;; constants
+
+;; functions
+
+predicates
+	asmpt-lcr14 : History;
+	cmt-lcr14 : History;
+	
+	asmpt-lcr134 : History;
+	cmt-lcr134 : History;
+	
+	asmpt-lcr1234 : History;
+	cmt-lcr1234 : History;
+	
+	safe : History;
+
+axioms
+	asmpt-lcr14-def: asmpt-lcr14(h) ↔ asmpt-lcr4(h); used for: s, ls;
+	cmt-lcr14-def: cmt-lcr14(h) ↔ cmt-lcr1(h) ∧ cmt-lcr4(h); used for: s, ls;
+	
+	asmpt-lcr134-def: asmpt-lcr134(h) ↔ asmpt-lcr4(h); used for: s, ls;
+	cmt-lcr134-def: cmt-lcr134(h) ↔ cmt-lcr14(h) ∧ cmt-lcr3(h); used for: s, ls;
+	
+	asmpt-lcr1234-def: asmpt-lcr1234(h) ↔ true; used for: s, ls;
+	cmt-lcr1234-def: cmt-lcr1234(h) ↔ cmt-lcr134(h) ∧ cmt-lcr2(h); used for: s, ls;
+	
+	safe-def: safe(h) ↔ (
+		cnt(h, send(lcr1-leaderEXPORT)) = 0
+		∧ cnt(h, send(lcr2-leaderEXPORT)) = 0
+		∧ cnt(h, send(lcr3-leaderEXPORT)) = 0
+	); used for: s, ls;
+
+end enrich

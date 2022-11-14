@@ -1,0 +1,47 @@
+lemmas
+	cmt-init: cmt([]);
+	q_init-GetPrime: ((q_init(g)) ∧ (ctrl(g) = GetPrime) ∧ ((p = pAcc(data(g)))) ∧ (true)) → (
+		q_GetPrime([], g)
+	);
+	1-Forward-Forward: ((h1 = (∅ ++ msg(receive(prevI), number(_x1))) + h) ∧ ((ctrl(g1) = Forward) ∧ ((p = pAcc(data(g)))) ∧ (pAcc(data(g1)) = p)) ∧ (¬ ((p | x) ∨ (¬ p | x)))) → (
+		((q_Forward(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Forward(h1, g1)
+			))
+		)
+	);
+	2-Forward-Forward: ((h1 = (∅ ++ msg(receive(prevI), number(x))) + h) ∧ ((ctrl(g1) = Forward) ∧ ((p = pAcc(data(g)))) ∧ (pAcc(data(g1)) = p)) ∧ (p | x)) → (
+		((q_Forward(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Forward(h1, g1)
+			))
+		)
+	);
+	3-Forward-Forward: ((h1 = (∅ ++ msg(send(nextO), number(x)) ++ msg(receive(prevI), number(x))) + h) ∧ ((ctrl(g1) = Forward) ∧ ((p = pAcc(data(g)))) ∧ (pAcc(data(g1)) = p)) ∧ (¬ p | x)) → (
+		((q_Forward(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Forward(h1, g1)
+			))
+		)
+	);
+	4-GetPrime-Forward: ((h1 = (∅ ++ msg(receive(prevI), number(x))) + h) ∧ ((ctrl(g1) = Forward) ∧ ((p = pAcc(data(g)))) ∧ (pAcc(data(g1)) = x)) ∧ (true)) → (
+		((q_GetPrime(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Forward(h1, g1)
+			))
+		)
+	);
+	Forward-input: ((h1 = i + h) ∧ (i ⊆ ∅ ++ msg(send(prevI), e0)) ∧ (¬ (i = ∅))) → (
+		((q_Forward(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Forward(h1, g)
+			))
+		)
+	);
+	GetPrime-input: ((h1 = i + h) ∧ (i ⊆ ∅ ++ msg(send(prevI), e0)) ∧ (¬ (i = ∅))) → (
+		((q_GetPrime(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅ ++ prevI))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_GetPrime(h1, g)
+			))
+		)
+	);

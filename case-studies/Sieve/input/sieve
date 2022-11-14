@@ -1,0 +1,22 @@
+machine
+  name Sieve;
+  acp [ cnt(h, send(prevI)) > 0 → ∀ e . e ∈ first(h, send(prevI)) → acc1(e) = myPrime
+    : events(project(h, { send(nextO) })) = filterNotDiv(events(project(h, { receive(prevI) })), { myPrime }) ∧ (cnt(h, send(nextO)) < cnt(h, receive(prevI)) ∨ (cnt(h, send(nextO)) = 0 ∧ cnt(h, receive(prevI)) = 0)) ]
+    : [ true ];
+
+  vars p;
+
+  inputs prev.number(val);
+
+  outputs next.number(val);
+
+  states
+    GetPrime : [ cnt(h, send(nextO)) = 0 ∧ cnt(h, receive(prevI)) = 0 ],
+    Forward : [ events(project(h, { send(nextO) })) = filterNotDiv(events(project(h, { receive(prevI) })), { myPrime }) ∧ cnt(h, send(nextO)) < cnt(h, receive(prevI)) ∧ pAcc(data(g)) = myPrime ];
+
+  init GetPrime;
+
+  trans GetPrime --> Forward : prev.number(x) / { p := x };
+  trans Forward --> Forward : prev.number(x) [ p | x ];
+  trans Forward --> Forward : prev.number(x) [ ¬ p | x ] / { next.number(x) };
+end machine

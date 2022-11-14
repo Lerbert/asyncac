@@ -1,0 +1,25 @@
+enrich generator, sieve1, sieve2, sieve3 with
+
+;; constants
+
+;; functions
+
+predicates
+	asmpt : History;
+	cmt : History;
+
+axioms
+	asmpt-def: asmpt(h) ↔ (
+		true
+	); used for: s, ls;
+	
+	cmt-def: cmt(h) ↔ (
+		(cnt(h, send(generator-sieveTOsieve1-prev)) > 0 → ∀ e . e ∈ first(h, send(generator-sieveTOsieve1-prev)) → prime(acc1(e)))
+		∧ (cnt(h, send(sieve1-nextTOsieve2-prev)) > 0 → ∀ e . e ∈ first(h, send(sieve1-nextTOsieve2-prev)) → prime(acc1(e)))
+		∧ (cnt(h, send(sieve2-nextTOsieve3-prev)) > 0 → ∀ e . e ∈ first(h, send(sieve2-nextTOsieve3-prev)) → prime(acc1(e)))
+		∧ (cnt(h, send(sieve3-nextEXPORT)) > 0 → ∀ e . e ∈ first(h, send(sieve3-nextEXPORT)) → prime(acc1(e)))
+		∧ (cnt(h, send(sieve3-nextEXPORT)) > 0 → ∀ e . e ∈ final(h, send(sieve3-nextEXPORT)) → ¬ 2 | acc1(e) ∧ ¬ 3 | acc1(e) ∧ ¬ 5 | acc1(e))
+	); used for: s, ls;
+
+
+end enrich

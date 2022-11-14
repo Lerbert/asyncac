@@ -1,0 +1,3 @@
+instantiate parameter ctrl-data < conf with lcrProcMax-ctrl-data by mapping
+
+end instantiate

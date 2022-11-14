@@ -1,0 +1,13 @@
+rename Sieve by morphism
+
+asmpt → asmpt-sieve1;
+cmt → cmt-sieve1;
+q_init → q_init-sieve1;
+q_Forward → q_Forward-sieve1;
+q_GetPrime → q_GetPrime-sieve1;
+nextO → nextO-sieve1;
+prevI → prevI-sieve1;
+
+myPrime → myPrime-sieve1;
+
+end rename

@@ -1,0 +1,9 @@
+rename Sieve-conf-inst by morphism
+
+Conf → SieveConf;
+Ctrl → SieveCtrl;
+Data → SieveData;
+conf → SievecConf;
+Dt → SieveDt;
+
+end rename

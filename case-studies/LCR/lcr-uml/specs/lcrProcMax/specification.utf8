@@ -1,0 +1,46 @@
+enrich lcrProcMax-conf, lcrX4-history with
+
+constants
+	leaderO : Channel;
+	nextO : Channel;
+	prevI : Channel;
+
+	myId : nat;
+	inIds : NatSet;
+
+;; functions
+
+predicates
+	asmpt : History;
+	cmt : History;
+	q_init : lcrProcMaxConf;
+	q_Done : History × lcrProcMaxConf;
+	q_Run : History × lcrProcMaxConf;
+	q_Start : History × lcrProcMaxConf;
+
+axioms
+	id-ge-all-inids: x ∈ inIds → myId ≥ x; used for: f, lf;
+	leaderO-nextO-disj: ¬ (leaderO = nextO); used for: s, ls;
+	leaderO-prevI-disj: ¬ (leaderO = prevI); used for: s, ls;
+	nextO-prevI-disj: ¬ (nextO = prevI); used for: s, ls;
+	asmpt-def: (asmpt(h)) ↔ (
+		# queue(h, prevI) = 0 ∨ queue(h, prevI).head ⊆ vote(inIds)
+	); used for: s, ls;
+	cmt-def: (cmt(h)) ↔ (
+		∀ i . i ∈ h → ∀ e . msg(send(nextO), e) ∈ i → ∃ n . e = vote(n) ∧ n = myId
+	); used for: s, ls;
+	q_init-def: (q_init(g)) ↔ (
+		pidAcc(data(g)) = myId
+	); used for: s, ls;
+	q_Done-def: (q_Done(h, g)) ↔ (
+		cmt(h) ∧ pidAcc(data(g)) = myId
+	); used for: s, ls;
+	q_Run-def: (q_Run(h, g)) ↔ (
+		cmt(h) ∧ pidAcc(data(g)) = myId
+	); used for: s, ls;
+	q_Start-def: (q_Start(h, g)) ↔ (
+		cmt(h) ∧ pidAcc(data(g)) = myId
+	); used for: s, ls;
+
+
+end enrich

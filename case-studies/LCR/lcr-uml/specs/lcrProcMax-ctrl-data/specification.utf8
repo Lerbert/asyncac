@@ -1,0 +1,12 @@
+data specification
+	using nat
+
+Ctrl = Done | Run | Start;
+Data = Dt(pidAcc : nat);
+
+variables
+	n : nat;
+	varCtrl : Ctrl;
+	varData : Data;
+
+end data specification

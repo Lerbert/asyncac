@@ -1,0 +1,16 @@
+rename lcrProc by morphism
+
+asmpt → asmpt-lcr2;
+cmt → cmt-lcr2;
+q_init → q_init-lcr2;
+q_Done → q_Done-lcr2;
+q_Run → q_Run-lcr2;
+q_Start → q_Start-lcr2;
+leaderO → leaderO-lcr2;
+nextO → nextO-lcr2;
+prevI → prevI-lcr2;
+
+myId → myId-lcr2;
+inIds → inIds-lcr2;
+
+end rename

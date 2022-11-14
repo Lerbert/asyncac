@@ -1,0 +1,25 @@
+
+;;;****************************************************************************************
+;;;
+;;; This file contains rules for the 'use patterns' heuristic
+;;;
+;;; An entry to this list has the following form:
+;;;
+;;; pattern: <sequent> ;
+;;; [forbidden: <sequent> ;]
+;;; rule: <name> [rulearg];
+;;; [apply rule: (1 | 11 | once | unique | always);]
+;;;
+;;; rulearg can be e.g.:
+;;;
+;;; for apply lemma: <lemmaname> with [<variables>] -> [substitution];
+;;;                  <lemmaname> from specification <specname> with [<variables>] -> [substitution];
+;;;                  <lemmaname> from specification <specname> [<instname>] with [<variables>] -> [substitution];
+;;;
+;;;****************************************************************************************
+
+patterns
+
+;; pattern:
+;; rule:
+

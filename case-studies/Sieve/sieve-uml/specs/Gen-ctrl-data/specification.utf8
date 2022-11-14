@@ -1,0 +1,12 @@
+data specification
+	using nat
+
+Ctrl = Generate;
+Data = Dt(xAcc : nat);
+
+variables
+	n : nat;
+	varCtrl : Ctrl;
+	varData : Data;
+
+end data specification

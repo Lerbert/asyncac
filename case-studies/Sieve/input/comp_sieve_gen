@@ -1,0 +1,12 @@
+system
+  name sieves;
+
+  comp generator : Gen;
+  comp sieve1 : Sieve;
+  comp sieve2 : Sieve;
+  comp sieve3 : Sieve;
+
+  conn generator.sieve -- sieve1.prev;
+  conn sieve1.next -- sieve2.prev;
+  conn sieve2.next -- sieve3.prev;
+end system

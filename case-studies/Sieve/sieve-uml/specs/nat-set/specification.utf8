@@ -1,0 +1,6 @@
+actualize set-union with nat-prime by morphism
+
+elem → nat;
+set → NatSet;
+
+end actualize

@@ -1,0 +1,15 @@
+enrich sieve1-rename with
+
+;; constants
+
+;; functions
+
+;; predicates
+
+axioms
+	nextO-sieve1-def: nextO-sieve1 = sieve1-nextTOsieve2-prev; used for: s, ls;
+	prevI-sieve1-def: prevI-sieve1 = generator-sieveTOsieve1-prev; used for: s, ls;
+	myPrime-def: myPrime-sieve1 = 2; used for: s, ls;
+
+
+end enrich

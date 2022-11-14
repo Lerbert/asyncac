@@ -1,0 +1,29 @@
+enrich Gen-conf, sieves-history with
+
+constants
+	sieveO : Channel;
+
+;; functions
+
+predicates
+	asmpt : History;
+	cmt : History;
+	q_init : GenConf;
+	q_Generate : History × GenConf;
+
+axioms
+	asmpt-def: (asmpt(h)) ↔ (
+		true
+	); used for: s, ls;
+	cmt-def: (cmt(h)) ↔ (
+		∀ t . t ⊒ project(h, { send(sieveO) }) ∧ # t ≠ 0 → t.head ≠ ∅ ∧ ∀ m . m ∈ t.head → acc1(ev(m)) = # t + 1
+	); used for: s, ls;
+	q_init-def: (q_init(g)) ↔ (
+		true
+	); used for: s, ls;
+	q_Generate-def: (q_Generate(h, g)) ↔ (
+		cmt(h) ∧ xAcc(data(g)) = # project(h, { send(sieveO) }) + 2
+	); used for: s, ls;
+
+
+end enrich

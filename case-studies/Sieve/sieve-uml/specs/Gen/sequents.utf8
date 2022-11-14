@@ -1,0 +1,19 @@
+lemmas
+	cmt-init: cmt([]);
+	q_init-Generate: ((q_init(g)) ∧ (ctrl(g) = Generate) ∧ ((x = xAcc(data(g)))) ∧ (x = 2)) → (
+		q_Generate([], g)
+	);
+	1-Generate-Generate: ((h1 = (∅ ++ msg(send(sieveO), number(x))) + h) ∧ ((ctrl(g1) = Generate) ∧ ((x = xAcc(data(g)))) ∧ (xAcc(data(g1)) = x + 1)) ∧ (true)) → (
+		((q_Generate(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Generate(h1, g1)
+			))
+		)
+	);
+	Generate-input: ((h1 = i + h) ∧ (i ⊆ ∅) ∧ (¬ (i = ∅))) → (
+		((q_Generate(h, g)) ∧ (asmpt(h)) ∧ (complete(h1, ∅))) → (
+			(cmt(h1)) ∧ ((asmpt(h1)) → (
+				q_Generate(h1, g)
+			))
+		)
+	);

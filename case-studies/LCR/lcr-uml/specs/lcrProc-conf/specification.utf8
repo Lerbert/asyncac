@@ -1,0 +1,9 @@
+rename lcrProc-conf-inst by morphism
+
+Conf → lcrProcConf;
+Ctrl → lcrProcCtrl;
+Data → lcrProcData;
+conf → lcrProccConf;
+Dt → lcrProcDt;
+
+end rename

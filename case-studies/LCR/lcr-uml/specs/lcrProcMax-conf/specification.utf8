@@ -1,0 +1,9 @@
+rename lcrProcMax-conf-inst by morphism
+
+Conf → lcrProcMaxConf;
+Ctrl → lcrProcMaxCtrl;
+Data → lcrProcMaxData;
+conf → lcrProcMaxcConf;
+Dt → lcrProcMaxDt;
+
+end rename
